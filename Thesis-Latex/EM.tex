@@ -1,0 +1,242 @@
+\documentclass[10pt,a4paper]{report}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+
+\begin{document}
+\title{Implementation of the EM algorithm for the moving transmitter DPD algorithm}
+\maketitle
+The EM algorithm is an efficient iterative procedure to compute the Maximum Likelihood estimate in the presence of missing or hidden data.
+Each iteration of the EM algorithm consists of two processes: The E-step and the M-step. In the expectation step, or E-step, the missing data are estimated given the observed data and current estimate of the model parameters.\\
+
+
+This is achieved by using the conditional expectation. In the M-step, the likelihood function is maximized under the assumption that the missing data variables are known.
+Convergence to a local maximum is assured since the algorithm is guaranteed to increase the likelihood at each iteration.\\
+
+
+
+In the derivation of the algorithm, $\mathbf{x}$ is defined as the random vector that results from a parametrized family, defined by the parameters vector $\mathbf{\theta}$.
+We wish to find $\mathbf{\theta}$ that maximizes $P(\mathbf{x}|\mathbf{\theta})$.\\
+
+We define the likelihood function $L(\mathbf{\theta})$ as follows:
+\begin{equation}
+L(\mathbf{\theta}) \triangleq \ln P(\mathbf{x}|\mathbf{\theta})
+\end{equation}
+
+
+We denote a hidden random vector $\mathbf{z}$, of hidden, unknown or latent variables that simplify the maximization of the likelihood function.\\
+
+We start with at initial value for the parameters vector $\mathbf{\theta}$. In each step of the algorithm we improve the likelihood of the estimation by choosing $\mathbf{\theta}_{n+1}$ as follows:
+\begin{eqnarray}
+\mathbf{\theta}_{n+1} &=& \\
+&=& \text{argmax}_{\mathbf{\theta}}\{\text{E}_{\mathbf{z}|\mathbf{x,\theta_n}}\{\text{ln}P(\mathbf{x,z|\theta}) \}\} \nonumber \\
+&=& \text{argmax}_{\mathbf{\theta}}\left\{\sum_{\mathbf{z}}P(\mathbf{z|x,\theta_n}) \ln P(\mathbf{x,z|\theta})\right\} \nonumber
+\end{eqnarray}
+
+The two steps of the EM algorithm appear in the equation above. At the E step, the conditional expectation $\text{E}_{\mathbf{z}|\mathbf{x,\theta_n}}\{\text{ln}P(\mathbf{x,z|\theta}) \}$ is evaluated, and then at the M step, this expression is maximized with respect to $\mathbf{\theta}$.\\
+
+A possible implementation of the EM algorithm for our problem is achieved by defining the velocity of the transmitter as the missing variable. Thus, we define:
+\begin{eqnarray}
+\mathbf{x}=\mathbf{r}\\
+\mathbf{z} = \vec{v}\\
+\mathbf{\theta} = \vec{p}
+\end{eqnarray}
+
+Where $\mathbf{r}$ represents the received signal, $\vec{v}$ represents the velocity of the transmitter, and $\vec{p}$ represents the position of the transmitter.\\
+
+Notice that in the suggested model, we treat the position as the unknown parameter, while we treat the velocity as the missing random variable. Thus, in order to implement the EM algorithm, the probabilistic characteristics of the velocity as a random variable should be defined.\\
+
+We can then see that:
+\begin{equation}
+P(\mathbf{x,z|\theta}) = P(\mathbf{r}|\vec{v},\vec{p})P(\vec{v}|\vec{p})
+\end{equation}
+
+Since we consider the velocity and the position of the transmitter to be independent, we can write:
+\begin{equation}
+P(\mathbf{x,z|\theta}) = P(\mathbf{r}|\vec{v},\vec{p})P(\vec{v})
+\end{equation}
+
+Using Bayes's rule, we can also see that:
+\begin{equation}
+P(\mathbf{z|x,\theta_n}) = \frac{P(\mathbf{x|z,\theta_n})P(\mathbf{z|\theta_n })}{\sum_{\mathbf{z^{'}}} P(\mathbf{x|z{'},\theta_n})P(\mathbf{z^{'}|\theta_n})}
+\end{equation}
+
+So that:
+\begin{equation}
+P(\mathbf{z|x,\theta_n}) = \frac{P(\mathbf{r}|\vec{v},\vec{p}_n)P(\vec{v})}{\sum_{\vec{v}^{'}} P(\mathbf{r}|\vec{v}^{'},\vec{p}_n)P(\vec{v}^{'})}
+\end{equation}
+
+We can now write:
+\begin{equation}
+E_n(\vec{p}) \triangleq \text{E}_{\vec{v}|\mathbf{r},\vec{p}_n} \{ \ln P(\mathbf{r},\vec{v}|\vec{p})\}=
+\sum_{\vec{v}}\left\{
+\frac{P(\mathbf{r}|\vec{v},\vec{p}_n)P(\vec{v})} { \sum_{\vec{v}^{'}} \{ 
+P(\mathbf{r}|\vec{v}^{'},\vec{p}_n)P(\vec{v}^{'})
+\} }
+\ln \{P(\mathbf{r}|\vec{v},\vec{p})P(\vec{v}) \} 
+\right\}
+\end{equation}
+
+
+If we define:
+\begin{equation}
+\tilde{E}_n(\vec{p}) \triangleq
+\sum_{\vec{v}}
+\left\{
+\frac
+{
+P(\mathbf{r}|\vec{v},\vec{p}_n)P(\vec{v})} 
+{ 
+\sum_{\vec{v}^{'}} \{ 
+P(\mathbf{r}|\vec{v}^{'},\vec{p}_n)P(\vec{v}^{'})
+\} 
+}
+\ln \{P(\mathbf{r}|\vec{v},\vec{p})\} 
+\right\}
+\end{equation}
+
+We can see that $\tilde{E_n}$ and $E_n$ have the same maximum with respect to $\vec{p}$, since we eliminated an expression that does not depend on $\vec{p}$.\\
+
+Furthermore, since $\sum_{\vec{v}^{'}} \{P(\mathbf{r}|\vec{v}^{'},\vec{p}_n)P(\vec{v}^{'})$ does not depend on $\vec{p}$ or $\vec{v}$ we define $\tilde{E_n}$ as follows and still maintain the same maximum:
+
+\begin{equation}
+\label{eq:e_n_tilde_discrete}
+\tilde{E}_n(\vec{p}) \triangleq
+\sum_{\vec{v}}
+\{
+P(\mathbf{r}|\vec{v},\vec{p}_n)P(\vec{v}) 
+\ln \{P(\mathbf{r}|\vec{v},\vec{p})\} 
+\}
+\end{equation}
+
+
+The expressions of the form $P(\mathbf{r}|\vec{v},\vec{p})$ are well known to us from the development of the DPD algorithm, and are the expressions for the likelihood function. $P(\vec{v})$ is the assumed velocity probability density function, which can be defined as a constant probability for a defined range of possible velocities, or in a more complex manner, given there is some a-priori information about the velocity.\\
+
+And so, for the M step:
+\begin{equation}
+\vec{p}_{n+1} = \text{argmax}_{\vec{p}}\tilde{E}_n(\vec{p})
+\end{equation}
+
+Convergence of the method is also guaranteed even if the maximum of the function is not found at the M-step, but rather a position $\vec{p}_{n+1}$ is found, for which:
+
+\begin{equation}
+\tilde{E}_n(\vec{p}_{n+1})>\tilde{E}_n(\vec{p_{n}})
+\end{equation}
+
+
+By transforming Equation (\ref{eq:e_n_tilde_discrete}) to the continuous definition of the probability distribution, we get:
+
+\begin{equation}
+\label{eq:e_n_tilde_continuous}
+\tilde{E}_n(\vec{p}) =
+\int
+P(\mathbf{r}|\vec{v},\vec{p}_n)P(\vec{v})
+\ln \{P(\mathbf{r}|\vec{v},\vec{p})\} 
+d\vec{v}
+\end{equation}
+
+We remember that:
+\begin{equation}
+P(\mathbf{r}|\vec{v},\vec{p})=
+\left(\frac{1}{\sqrt{2 \pi \sigma^2}}\right)^{NL}
+e^
+{
+-
+\frac{1}{2\sigma^2}
+\sum_{\ell=1}^L
+\|\mathbf{r}_{\ell}-b_{\ell}\mathbf{A_{\ell}}\mathbf{F_{\ell}}\mathbf{C}\mathbf{s}\|^2
+}
+\end{equation}
+
+We know that the above expression could be maximized with respect to $b_\ell$ by choosing:
+$$bl=(\mathbf{A_l F_l C s})^H\mathbf{r_\ell}$$
+
+Transforming the above expression to:
+\begin{equation}
+P_2(\mathbf{r}|\vec{v},\vec{p})=
+\left(\frac{1}{\sqrt{2 \pi \sigma^2}}\right)^{NL}
+e^
+{
+-
+\frac{1}{2\sigma^2}
+\sum_{\ell=1}^L \|\mathbf{r_\ell}\|^2-\|(\mathbf{A_\ell F_\ell C s})^H\mathbf{r_\ell}\|^2
+}
+\end{equation}
+
+Where we denoted the above probability distribution by $P_2$ in analogy to the known-signals cost function $L_2$.\\
+
+If the original signal is unknown, we can further maximize the expression by substituting $\mathbf{Cs}$ with the eigenvector corresponding to the maximal eigenvalue of the matrix $Q$, transforming the expression above to:
+
+\begin{equation}
+P_3(\mathbf{r}|\vec{v},\vec{p})=
+\left(\frac{1}{\sqrt{2 \pi \sigma^2}}\right)^{NL}
+e^
+{
+-
+\frac{1}{2\sigma^2}
+\sum_{\ell=1}^L \|\mathbf{r_\ell}\|^2-
+\lambda_{max}(\vec{p},\vec{v})
+}
+\end{equation}
+
+Where we denoted the above probability distribution by $P_3$ in analogy to the unknown-signals cost function $L_3$.\\
+
+We can see that:
+\begin{equation}
+\ln \{P_2(\mathbf{r}|\vec{v},\vec{p})\}  = 
+\ln \left(\frac{1}{\sqrt{2 \pi \sigma^2}}\right)^{NL}
+-
+\frac{1}{2\sigma^2} \sum_{\ell=1}^L \|\mathbf{r_\ell}\|^2+
+\frac{1}{2\sigma^2} \sum_{\ell=1}^L \|(\mathbf{A_\ell F_\ell C s})^H\mathbf{r_\ell}\|^2
+\end{equation}
+
+And that:
+
+\begin{equation}
+\ln \{P_3(\mathbf{r}|\vec{v},\vec{p})\}  = 
+\ln \left(\frac{1}{\sqrt{2 \pi \sigma^2}}\right)^{NL}
+-
+\frac{1}{2\sigma^2}
+\sum_{\ell=1}^L \|\mathbf{r_\ell}\|^2+
+\frac{1}{2\sigma^2}\lambda_{max}(\vec{p},\vec{v})
+\end{equation}
+
+Since 
+$\ln \left(\frac{1}{\sqrt{2 \pi \sigma^2}}\right)^{NL}$ and $
+\frac{1}{2\sigma^2}\sum_{\ell=1}^L \|\mathbf{r_\ell}\|^2$ 
+are constants, we can avoid them when substituting back into Equation (\ref{eq:e_n_tilde_continuous}) since they either add a constant bias, or multiply the expression by a constant value that does not affect the maximum of the expression.\\
+
+Also, remembering that $\mathbf{A_{\ell}}$ and $\mathbf{F_{\ell}}$ are functions of $\vec{p}$, we denote $\mathbf{A_{\ell,n}}$ and $\mathbf{F_{\ell,n}}$ as functions of $\vec{p_n}$.\\
+
+Thus, we can write:
+\begin{equation}
+\label{eq:e_2_n_tilde}
+\tilde{E}_{2,n}(\vec{p})=
+\int
+e^{
+-
+\frac{1}{2\sigma^2} \sum_{\ell=1}^L \|(\mathbf{A_{\ell,n} F_{\ell,n} C s})^H\mathbf{r_\ell}\|^2
+}
+P(\vec{v})
+\sum_{\ell=1}^L \|(\mathbf{A_\ell F_\ell C s})^H\mathbf{r_\ell}\|^2
+d\vec{v}
+\end{equation}
+
+And:
+\begin{equation}
+\label{eq:e_3_n_tilde}
+\tilde{E}_{3,n}(\vec{p})=
+\int
+e^{
+-
+\frac{1}{2\sigma^2} \lambda_{max}(\vec{p}_n,\vec{v})
+}
+P(\vec{v})
+\lambda_{max}(\vec{p},\vec{v})
+d\vec{v}
+\end{equation}
+
+\end{document}
+

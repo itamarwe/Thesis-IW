@@ -1,0 +1,96 @@
+function [DT DF] = DT_DF(receivedSignal, rReceiverMat, rTransmitter,v,C,Fc,Fs)
+%This Function get as an input the received signal in the receivers, and
+%produces as an output the Differential Time, and Diffrential frequency
+%between the receivers. Meaning: DT[i,j] = the estimated TOA diffrenece between the
+%i-th receiver and the j-th receiver.
+
+%The number of receivers
+L = size(receivedSignal,1);
+%The length of the signal [samples]
+N = size(receivedSignal,2);
+%The maximum possible value of the frequency shift
+maxDf = 2*Fc*norm(v)/C;
+
+rTransmitterMat = ones(L,2)*[rTransmitter(1) 0;0 rTransmitter(2)];
+rDiffMat = rTransmitterMat-rReceiverMat;
+
+%The distance matrix
+rDistances = sqrt(rDiffMat(:,1).^2+rDiffMat(:,2).^2);
+for i=1:L
+    for j=(i+1):L
+        rDifDistances(i,j) = abs(rDistances(i)-rDistances(j));
+    end
+end
+
+sampleDelay = (rDifDistances/(C/Fs));
+maxDt = max(max(sampleDelay));
+
+
+
+%DT0 - The DT matrix if there was no noise, calculated accroding to the
+%geometry.
+%DF0 - The DF matrix if there was no noise, calculated accroding to the
+%geometry.
+DT0 =zeros(L);
+DF0 =zeros(L);
+DT =zeros(L);
+DF =zeros(L);
+
+k_vec = 0:N-1;
+
+for k=1:L
+    for l = 1:L
+        %DT0 calculation
+        DT0(k,l) = norm((rReceiverMat(k,:)-rTransmitter))/C-norm((rReceiverMat(l,:)-rTransmitter))/C;
+        %Because DT is anti-symmetric
+        DT0(l,k) =    - DT0(k,l);
+        %DF0 calculation
+        DF0(k,l) = -Fc/C*((v*(rTransmitter-rReceiverMat(k,:))')/norm((rTransmitter-rReceiverMat(k,:))))+Fc/C*((v*(rTransmitter-rReceiverMat(l,:))')/norm((rTransmitter-rReceiverMat(l,:))));
+        %Because DF is anti-symmetric
+        DF0(l,k) =    - DF0(k,l);
+    end
+end
+
+dt_vec = [linspace(-maxDt,maxDt,500)];
+df_vec = [linspace(-maxDf,maxDf,500)];
+
+A_mat = exp(-2*pi*1i*df_vec'*((0:(N-1))/Fs));
+CAF = zeros(length(dt_vec),length(df_vec));
+for k=1:L
+    k
+    for l=(k+1):L
+        l
+        for i=1:length(dt_vec)
+            %Time shift of the k-th signal
+            ak = fft(receivedSignal(k,:));
+            bk = ak.*exp(2*pi*1i/N*k_vec*dt_vec(i));
+            delayedSignal = ifft(bk);
+            
+            %df = df_vec(2)-df_vec(1);
+            %A_vec0 = exp(2*pi*1i*df_vec(1)*(0:(N-1))/Fs);
+            %A_vec = exp(2*pi*1i*df*(0:(N-1))/Fs);
+            %Give an intial freq shift to the delayed signal
+           % shiftedSignal = A_vec0.*delayedSignal;
+            for j= 1:length(df_vec)
+                %Freq shift of the k-th signal
+                %A_vec = exp(-2*pi*1i*df_vec(j)*((0:(N-1))/Fs));
+                %shiftedSignal = A_vec.*delayedSignal;
+                shiftedSignal = A_mat(j,:).*delayedSignal;
+                CAF(i,j) = shiftedSignal*receivedSignal(l,:)';
+                %shiftedSignal = A_vec.*shiftedSignal;
+                %    plot(abs(shiftedSignal),'r');hold on; plot(abs(receivedSignal(l,:)));hold off;
+            end
+        end
+
+        [i,j] = find(abs(CAF) == max(max(abs(CAF))));
+        DF(k,l) = df_vec(j);
+        DT(k,l) = dt_vec(i)/Fs;
+        contour(abs(CAF));
+        drawnow;
+    end
+end
+DT0
+DT
+DF0
+DF
+

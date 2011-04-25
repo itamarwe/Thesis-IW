@@ -1,0 +1,6 @@
+function [receivedSignal] = addNoise(cleanReceivedSignal,SNRdB);
+[L,N] = size(cleanReceivedSignal);
+%Receiver Noise
+for l=1:L
+noise( = sqrt(CleanReceivedSignal(l)*CleanReceivedSignal(l)')*(10^(-SNRdB/10))*sqrt(1/2)*(randn(L,N)+i*randn(L,N))/sqrt(N);
+receivedSignal = cleanReceivedSignal+noise;

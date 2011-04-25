@@ -1,0 +1,25 @@
+%An example of gradient descent
+%for z=x^2+y^2;
+close all;
+clear all;
+
+DELTA_X = 2;
+DELAT_Y = 2;
+MIU = 0.1;
+
+x = rand(1)*100;
+y = rand(1)*100;
+
+grad_norm = inf;
+histX = [x];
+histY = [y];
+
+while (abs(grad)>0.2)
+    gradX = ((x+DELTA_X+randn(1)).^2-(x.^2+randn(1)))/DELTA_X;
+    gradY = ((y+DELTA_X+randn(1)).^2-(x.^2+randn(1)))/DELTA_X;
+    x = x-MIU*grad;
+    histX = [histX x];
+end
+
+plot(histX);
+

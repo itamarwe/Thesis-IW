@@ -1,0 +1,57 @@
+function [CRBMat, CRB_toa, CRB_foa] = CRB_toa_foa(Fc,c, delayedSignal, delayedSignalDot, N, Fs, b, rTransmitter,v, rReceiverMat,SNRdB)
+
+%Parameter to calculate: sl(time shifted s), sdotl(time shifted sdot),Al,sigmal
+
+%Known Signals CRB for TOA and FOA estimation
+
+L = size(rReceiverMat,1);
+rTransmitterMat = ones(L,2)*[rTransmitter(1) 0;0 rTransmitter(2)];
+rDiffMat = rTransmitterMat-rReceiverMat;
+d = sqrt(rDiffMat(:,1).^2+rDiffMat(:,2).^2);
+
+vNorm2 = v*v';
+vNorm = sqrt(vNorm2);
+
+cosTheta = rDiffMat(:,1)./d;
+sinTheta = rDiffMat(:,2)./d;
+cosPhi = rDiffMat*v'./(d*sqrt(vNorm2));
+sinPhiSign = zeros(L,1);
+for l=1:L
+    tempA = [rDiffMat(l,:) 0];
+    tempB = [v 0];
+    tempC = cross(tempA,tempB);
+    sinPhiSign(l) = sign(tempC(3));
+end
+
+    sinPhi = sqrt(1-cosPhi.^2).*sinPhiSign;
+
+
+%Create sl, sDotl
+
+sl = delayedSignal(:,1:N).';
+sDotl = delayedSignalDot(:,1:N).';
+
+sigmal = 10^(-SNRdB/20)*ones(1,L);
+
+A = zeros(N,N,L);
+
+for l=1:L
+    miu = -1/c*v*rDiffMat(l,:)'/d(l);
+    %frequency calculation
+    hzDopplerShift = Fc*miu; 
+    A(:,:,l) = diag(exp(2*pi*i*hzDopplerShift*(1:N)/Fs));
+end
+%We ignore for the moment the transmitter freq instability
+C=eye(N);
+
+Ts = 1/Fs;
+Ntilde = diag(0:N-1);
+
+
+for l=1:L
+dMldTl = -b(l)*A(:,:,1)*C*sDotl(1,:);
+dMldFl = 2*pi*1i*Ts*b(1)*Ntilde*A(:,:,1)*C*sl(1,:);
+
+CRB_toa = sigmal(1)^2/(2*dMldTl*dMldTl');
+CRB_foa = sigmal(1)^2/(2*dMldFl*dMldFl');
+end

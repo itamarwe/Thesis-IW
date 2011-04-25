@@ -1,0 +1,128 @@
+\begin{thebibliography}{20}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[J.M.~Zagami and Melillo(1998)]{zagami}
+J.J.~Bussgang J.M.~Zagami, S. A.~Parl and K.D. Melillo.
+\newblock Providing universal location services using a wireless e911 location
+  network.
+\newblock \emph{IEEE Commun. Mag.}, 1998.
+
+\bibitem[Hata and Nagatsu(1980)]{wifi}
+M.~Hata and T.~Nagatsu.
+\newblock Mobile location using signal strength measurements in a cellular
+  system.
+\newblock \emph{IEEE Transactions on Vehicular Technology}, 1980.
+
+\bibitem[Musicki and Koch()]{musicki}
+D.~Musicki and W.~Koch.
+\newblock Geolocation using tdoa and fdoa measurements.
+\newblock In \emph{Information Fusion, 2008 11th International Conference on}.
+
+\bibitem[Musicki et~al.(2010)Musicki, Kaune, and Koch]{musicki_kaune_koch}
+D.~Musicki, R.~Kaune, and W.~Koch.
+\newblock Mobile emitter geolocation and tracking using tdoa and fdoa
+  measurements.
+\newblock \emph{Signal Processing, IEEE Transactions on}, 58\penalty0
+  (3):\penalty0 1863 --1874, 2010.
+\newblock ISSN 1053-587X.
+\newblock \doi{10.1109/TSP.2009.2037075}.
+
+\bibitem[Torrieri(1984)]{torrieri}
+D.J. Torrieri.
+\newblock Statistical theory of passive location systems.
+\newblock \emph{IEEE Transactions on Aerospace and Electronic Systems}, 1984.
+
+\bibitem[Chan and Jardine(1990)]{chan_jardine}
+Y.T. Chan and F.L. Jardine.
+\newblock Target localization and tracking from doppler shift measurements.
+\newblock \emph{IEEE Journal of Oceanic Engineering}, 1990.
+
+\bibitem[Chan and Towers(1992)]{chan_towers}
+Y.T. Chan and J.J. Towers.
+\newblock Passive localization from doppler shifted frequency measurements.
+\newblock \emph{IEEE Transactions on Signal Processing}, 1992.
+
+\bibitem[D.P.~Haworth and Clement()]{haworth}
+R.~Bardelli D.P.~Haworth, N.G.~Smith and T.~Clement.
+\newblock Interference localisation for the eutelsat satellite system.
+\newblock In \emph{Global Telecommunications Conference, 1995. GLOBECOM '95.,
+  IEEE}.
+
+\bibitem[Ho and Chan(1997)]{ho_chan}
+K.C. Ho and Y.T. Chan.
+\newblock Geolocation of a known altitude object from tdoa and fdoa
+  measurements.
+\newblock \emph{IEEE Transactions on Aerospace and Electronic Systems}, 1997.
+
+\bibitem[Ho and Xu(2004)]{ho_xu}
+K.C. Ho and Wenwei Xu.
+\newblock An accurate algebraic solution for moving source location using tdoa
+  and fdoa measurements.
+\newblock \emph{Signal Processing, IEEE Transactions on}, 52\penalty0
+  (9):\penalty0 2453 -- 2463, 2004.
+\newblock ISSN 1053-587X.
+\newblock \doi{10.1109/TSP.2004.831921}.
+
+\bibitem[Amar and Weiss(2004)]{dpd}
+A.J. Amar and A.J. Weiss.
+\newblock Direct position determination of multiple radio signals.
+\newblock \emph{Proc. IEEE Int. Conf. Acoustics, Speech, and Signal
+  processing}, 2004.
+
+\bibitem[Weiss(2004)]{dpd_nb}
+A.J. Weiss.
+\newblock Direct position determination of narrowband radio frequency
+  transmitters.
+\newblock \emph{IEEE Signal Processing Letters}, 2004.
+
+\bibitem[Amar and Weiss(2008)]{dop_dpd_nb}
+Alon Amar and A.J. Weiss.
+\newblock Localization of narrowband radio emitters based on doppler frequency
+  shifts.
+\newblock \emph{IEEE Trans. on Signal Processing}, 2008.
+
+\bibitem[Weiss and Amar(2009)]{dop_dpd_wb}
+A.J. Weiss and A.~Amar.
+\newblock Direct geolocation of stationary wideband radio signal based on time
+  delays and doppler shifts.
+\newblock pages 101 --104, aug. 2009.
+\newblock \doi{10.1109/SSP.2009.5278630}.
+
+\bibitem[Stein(1993)]{stein}
+S.~Stein.
+\newblock Differntial delay/doppler ml estimation with unknown signals.
+\newblock \emph{IEEE Trans. on Signal Processing}, 1993.
+
+\bibitem[Knapp and Carter(1977)]{knapp_carter}
+C.~Knapp and G.~Carter.
+\newblock Time delay estimation in the presence of relative motion.
+\newblock In \emph{Acoustics, Speech, and Signal Processing, IEEE International
+  Conference on ICASSP '77.}, volume~2, pages 280 -- 283, May 1977.
+\newblock \doi{10.1109/ICASSP.1977.1170252}.
+
+\bibitem[Chan and Ho(1994)]{chan_and_ho}
+Y.T Chan and K.C Ho.
+\newblock A simple and efficient estimator for hyperbolic location.
+\newblock \emph{IEEE Trans. on Signal Processing}, 1994.
+
+\bibitem[Chestnut(1982)]{chestnut}
+P.~C. Chestnut.
+\newblock Emitter location accuracy using tdoa and differential doppler.
+\newblock \emph{IEEE Trans. on Aerospace and Electronic Systems}, 1982.
+
+\bibitem[gau(1999)]{gauss_newton_method}
+\emph{Nonlinear Programming}, chapter 1 - Unconstrained Optimization.
+\newblock Athena Scientific, 1999.
+
+\bibitem[Ren et~al.(2009)Ren, Fowler, and Wu]{fowler_wu}
+R.~Ren, M.L. Fowler, and N.E. Wu.
+\newblock Finding optimal trajectory points for tdoa/fdoa geo-location sensors.
+\newblock In \emph{Information Sciences and Systems, 2009. CISS 2009. 43rd
+  Annual Conference on}, pages 817 --822, 2009.
+\newblock \doi{10.1109/CISS.2009.5054830}.
+
+\end{thebibliography}

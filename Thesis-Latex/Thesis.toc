@@ -1,0 +1,68 @@
+\contentsline {chapter}{Abstract}{ii}{dummy.1}
+\vspace {1em}
+\contentsline {chapter}{Acknowledgements}{iii}{dummy.2}
+\vspace {1em}
+\contentsline {chapter}{List of Figures}{vi}{dummy.4}
+\contentsline {chapter}{Abbreviations}{ix}{dummy.6}
+\contentsline {chapter}{Symbols}{x}{dummy.9}
+\vspace {2em}
+\contentsline {chapter}{\numberline {1}Introduction and Literature Survey}{1}{chapter.12}
+\contentsline {section}{\numberline {1.1}Two-Step Localization Methods}{3}{section.13}
+\contentsline {subsection}{\numberline {1.1.1}Extracting TDOA and FDOA measurements}{3}{subsection.14}
+\contentsline {subsection}{\numberline {1.1.2}TOA and TDOA Based Passive Geolocation}{4}{subsection.19}
+\contentsline {subsection}{\numberline {1.1.3}FOA and FDOA Based Passive Geolocation}{8}{subsection.28}
+\contentsline {subsection}{\numberline {1.1.4}TDOA-FDOA Based Passive Geolocation}{14}{subsection.42}
+\contentsline {section}{\numberline {1.2}DPD Algorithm Concepts}{14}{section.45}
+\contentsline {section}{\numberline {1.3}Outline}{16}{section.46}
+\contentsline {chapter}{\numberline {2}Problem Formulation}{17}{chapter.47}
+\contentsline {section}{\numberline {2.1}General}{17}{section.48}
+\contentsline {section}{\numberline {2.2}Narrow-Band Time Domain Analysis}{18}{section.55}
+\contentsline {subsection}{\numberline {2.2.1}Definitions}{19}{subsection.56}
+\contentsline {subsection}{\numberline {2.2.2}ML Estimator}{20}{subsection.62}
+\contentsline {section}{\numberline {2.3}Wide-Band Time Domain Analysis}{22}{section.75}
+\contentsline {subsection}{\numberline {2.3.1}Definitions}{23}{subsection.76}
+\contentsline {subsection}{\numberline {2.3.2}ML estimator}{24}{subsection.82}
+\contentsline {chapter}{\numberline {3}Exploring the cost function $L_2$}{27}{chapter.95}
+\contentsline {section}{\numberline {3.1}Zero Noise Analysis - Simplified Scenario}{27}{section.96}
+\contentsline {section}{\numberline {3.2}Noisy Analysis - Simplified Scenario}{29}{section.103}
+\contentsline {section}{\numberline {3.3}Zero Noise Analysis - Full scenario}{32}{section.113}
+\contentsline {section}{\numberline {3.4}Noisy Analysis - Full Scenario}{34}{section.120}
+\contentsline {section}{\numberline {3.5}Expression For $\frac {\partial L_2}{\partial v_x}$ and $\frac {\partial L_2}{\partial v_y}$}{35}{section.126}
+\contentsline {section}{\numberline {3.6}Expression For $\frac {\partial L_2}{\partial x}$ and $\frac {\partial L_2}{\partial y}$ for Narrow-Band signals}{38}{section.144}
+\contentsline {section}{\numberline {3.7}Expression For $\frac {\partial L_2}{\partial x}$ and $\frac {\partial L_2}{\partial y}$ for Wide-Band signals}{39}{section.150}
+\contentsline {chapter}{\numberline {4}Location Algorithms}{42}{chapter.159}
+\contentsline {section}{\numberline {4.1}General}{42}{section.160}
+\contentsline {section}{\numberline {4.2}Known Narrow Band Signals}{43}{section.161}
+\contentsline {subsection}{\numberline {4.2.1}Steepest Descent Method}{44}{subsection.162}
+\contentsline {subsection}{\numberline {4.2.2}Gauss-Newton Method}{44}{subsection.165}
+\contentsline {section}{\numberline {4.3}Known Wide Band Signals}{46}{section.171}
+\contentsline {subsection}{\numberline {4.3.1}Steepest Descent Method}{46}{subsection.172}
+\contentsline {subsection}{\numberline {4.3.2}Gauss-Newton Method}{46}{subsection.173}
+\contentsline {section}{\numberline {4.4}Unknown Signals}{47}{section.182}
+\contentsline {section}{\numberline {4.5}Applying the Extended Kalman Filter}{47}{section.183}
+\contentsline {chapter}{\numberline {5}CRAMER-RAO Lower Bound}{51}{chapter.196}
+\contentsline {section}{\numberline {5.1}General CRAMER-RAO Lower Bound Formulation}{51}{section.197}
+\contentsline {subsection}{\numberline {5.1.1}$\frac {\partial \mathbf {m_\ell }}{\partial f_\ell }$ derivation:}{53}{subsection.205}
+\contentsline {subsection}{\numberline {5.1.2}$\frac {\partial \mathbf {m_\ell }}{\partial T_\ell }$ derivation:}{53}{subsection.210}
+\contentsline {subsection}{\numberline {5.1.3}$\frac {\partial f_\ell }{\partial x}$, $\frac {\partial f_\ell }{\partial y}$, $\frac {\partial f_\ell }{\partial v_x}$, $\frac {\partial f_\ell }{\partial v_y}$ derivation:}{54}{subsection.215}
+\contentsline {subsection}{\numberline {5.1.4}$\frac {\partial T_\ell }{\partial x}$, $\frac {\partial T_\ell }{\partial y}$, $\frac {\partial T_\ell }{\partial v_x}$, $\frac {\partial T_\ell }{\partial v_y}$ derivation:}{55}{subsection.222}
+\contentsline {subsection}{\numberline {5.1.5}$\frac {\partial \mathbf {m_\ell }}{\partial v_x}$,$\frac {\partial \mathbf {m_\ell }}{\partial v_y}$ derivation}{56}{subsection.235}
+\contentsline {subsection}{\numberline {5.1.6}$\frac {\partial \mathbf {m_\ell }}{\partial x}$,$\frac {\partial \mathbf {m_\ell }}{\partial y}$ derivation}{56}{subsection.238}
+\contentsline {section}{\numberline {5.2}Expression for $[J]_{v_x v_x}$ and $[J]_{v_y v_y}$ }{57}{section.241}
+\contentsline {section}{\numberline {5.3}Expression for $[J]_{x x}$ and $[J]_{y y}$ }{58}{section.246}
+\contentsline {section}{\numberline {5.4}Expression for $[J]_{x v_x}$ ,$[J]_{y v_y}$,$[J]_{x v_y} $ and $[J]_{y v_x} $}{60}{section.256}
+\contentsline {section}{\numberline {5.5}Expression for $[J]_{x y}$ and $[J]_{v_x v_y}$ }{61}{section.262}
+\contentsline {chapter}{\numberline {6}Numerical Results}{63}{chapter.267}
+\contentsline {section}{\numberline {6.1}General}{63}{section.268}
+\contentsline {section}{\numberline {6.2}Performance vs. SNR - Circular Receivers Array, Pulse Signal}{64}{section.269}
+\contentsline {section}{\numberline {6.3}Performance vs. SNR - Circular Receivers Array, Random Signal}{67}{section.276}
+\contentsline {section}{\numberline {6.4}Performance vs. SNR - Linear Receivers Array, Pulse Signal}{72}{section.282}
+\contentsline {section}{\numberline {6.5}Experimental Study Of The Cost Function}{75}{section.287}
+\contentsline {subsection}{\numberline {6.5.1}General}{75}{subsection.288}
+\contentsline {subsection}{\numberline {6.5.2}Pulse Signals}{76}{subsection.289}
+\contentsline {subsection}{\numberline {6.5.3}Random Signals}{82}{subsection.300}
+\contentsline {section}{\numberline {6.6}Performance Vs. Transmitter Position}{90}{section.314}
+\contentsline {chapter}{\numberline {7}Summary and Future Work}{97}{chapter.324}
+\vspace {2em}
+\vspace {2em}
+\contentsline {chapter}{Bibliography}{99}{dummy.325}

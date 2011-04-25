@@ -1,0 +1,432 @@
+%Simulation 02 - Model
+
+%*****************
+%*** init ***
+%*****************
+
+clear all;
+close all;
+
+C = 3e08; %Speed of Signal Propagation (Usually speed of light)[m/s]
+N = 2^8; %Number of samples used for estimation
+L = 6; %Number of receivers
+Fs = 8.4e6; %Sampling Frequency [Hz]
+TRIALS = 1000; %Number of Monte Carlo Trials
+
+
+%*** Receivers Positions ***
+
+%Spread evenly around the axis center
+R = 5000;% [m] Distance From the axis center
+
+rReceiverMat = R*[sin(((0:(L-1))*2*pi/L))' cos(((0:(L-1))*2*pi/L))' ]; %Positions of the receivers in the form [x1 y1; x2 y2;...etc]
+
+%Transmitter Position, Velocity, Nominal Frequency
+rTransmitter = [0 0]; %Transmitter position [x,y] [m]
+v = [300/sqrt(2) 300/sqrt(2)];%Transmitter velocity [vx, vy] [m/s]
+
+Fc = 1e09; % Carrier Frequency[Hz]
+
+%//////////////////////////////////
+%***********************************
+%*** Received Downshifted Signal ***
+%***********************************
+%//////////////////////////////////
+
+%Calculation of the Longest Delay
+rTransmitterMat = ones(L,2)*[rTransmitter(1) 0;0 rTransmitter(2)];
+rDiffMat = rReceiverMat- rTransmitterMat;
+rDistances = sqrt(rDiffMat(:,1).^2+rDiffMat(:,2).^2);
+microsecDelay = rDistances/(C/1e6);
+sampleDelay = floor(microsecDelay*Fs/1e6);
+sampleMaxDelay = max(sampleDelay);
+
+%Original Signal
+%s = randn(1,N+sampleMaxDelay).*exp(j*randn(1,N+sampleMaxDelay));
+s = 100*sin(2*pi*2e06*(1:(N+sampleMaxDelay))/Fs);
+
+%Complex Path Attenuation
+b = randn(1,L)+ randn(1,L)*i;
+
+%Receiver Noise
+noise = 0*randn(L,N);
+
+%Delayed Signal
+delayedSignal = zeros(L,N);
+
+for j=1:L
+    delayedSignal(j,:) = s((1+sampleMaxDelay-sampleDelay(j)):(N+sampleMaxDelay-sampleDelay(j)));
+end
+
+%A = zeros(N,N,L);
+
+miu = zeros(L,1);
+hzDopplerShift = zeros(L,1);
+%Doppler Shift
+for l=1:L
+    %miu calculation
+    miu(l) = -1/C*v*rDiffMat(l,:)'/sqrt(rDiffMat(l,:)*rDiffMat(l,:)');
+    %frequency calculation
+    hzDopplerShift(l) = Fc*miu(l);
+    %Al Matrix
+    %A(:,:,l) = diag(exp(2*pi*i*hzDopplerShift(l)*(1:N)/Fs));
+end
+
+
+%Received Signal
+receivedSignal = zeros(L,N);
+
+for l=1:L
+    vA=exp(2*pi*i*hzDopplerShift(l)*(1:N)/Fs);
+    receivedSignal(l,:) = b(l)*vA.*delayedSignal(l,:)+noise(l,:);
+end
+
+
+%for l=1:L
+%    for n=1:N
+%       vA = exp(2*pi*i*hzDopplerShift(l)*(1:N)/Fs)';
+%       receivedSignal(l,:) = b(l)*(vA*delayedSignal(l,:).').'+noise(l,:);
+%end
+
+%    end
+%end
+
+
+%/////////////////////////////////////
+%*************************************
+%** Estimation ***
+%*************************************
+%/////////////////////////////////////
+
+
+%************************************
+% GRID SEARCH
+%************************************
+
+%Grid Search Init
+
+
+gridX = [randn(1,TRIALS-1)*10000 0];
+gridY = [randn(1,TRIALS-1)*10000 0];
+% gridX = zeros(1,TRIALS)+100;
+% gridY = zeros(1,TRIALS)+150;
+gridVx = v(1)*([1+randn(1,TRIALS-1)*100 1]);
+gridVy = v(2)*([1+randn(1,TRIALS-1)*100 1]);
+% gridVx = v(1)*ones(1,TRIALS)+10;
+% gridVy = v(2)*ones(1,TRIALS)+12;
+
+lambdaMax = zeros(1,TRIALS);
+
+for trial=1:TRIALS
+
+    if mod(trial,10)==0
+        trial
+        TRIALS
+    end
+
+    rTransmitter = [gridX(trial) gridY(trial)];
+    v = [gridVx(trial) gridVy(trial)];
+
+
+    rTransmitterMat = ones(L,2)*[rTransmitter(1) 0;0 rTransmitter(2)];
+    rDiffMat = rReceiverMat- rTransmitterMat;
+    rDistances = sqrt(rDiffMat(:,1).^2+rDiffMat(:,2).^2);
+    microsecDelay = rDistances/(C/1e6);
+    sampleDelay = floor(microsecDelay*Fs/1e6);
+    sampleMaxDelay = max(sampleDelay);
+    %Evaluate hermitian A
+    %    hermitianA = zeros(N,N,L);
+    miu = zeros(L,1);
+    dopplerFixedSignal = zeros(L,N);
+    for l=1:L
+        %miu calculation
+        miu(l) = -1/C*v*rDiffMat(l,:)'/rDistances(l);
+        %frequency calculation
+        hzDopplerShift = Fc*miu(l);
+        %Al Matrix
+        %hermitianA(:,:,l) = diag(exp(2*pi*i*hzDopplerShift*(1:N)/Fs))';
+        %dopplerFixedSignal(l,:) = (hermitianA(:,:,l)*receivedSignal(l,:).').';
+        vHermitianA = exp(-2*pi*i*hzDopplerShift*(1:N)/Fs);
+        dopplerFixedSignal(l,:) =(vHermitianA.*receivedSignal(l,:)).';
+    end
+
+    Ntilda = N-sampleMaxDelay;
+    %Evaluate V
+    V = zeros(L,Ntilda);
+    for l=1:L
+        V(l,:) = dopplerFixedSignal(l,(1+sampleDelay(l)):(Ntilda+sampleDelay(l)));
+    end
+
+    %Evaluate Qtilda
+
+
+    Qtilda = V*V';
+    %Evaluate LambdaMax(Qtilda)
+    lambdaMax(trial) = eigs(Qtilda,1);
+end
+
+%*** Plots ****
+
+%Transmitter And Receivers Position
+figure;
+hold on;
+plot(rTransmitter(1),rTransmitter(2),'+r');
+plot(rReceiverMat(:,1),rReceiverMat(:,2),'*b');
+hold off;
+grid on;
+legend('Transmitter Position','Receivers Position');
+
+%Frequency Domain plot of the signals
+figure;
+for l=1:L
+    [Pxx(l,:),F(l,:)] = pwelch(receivedSignal(l,:),[],[],[],Fs);
+end
+plot(F',10*log10(Pxx)');
+title('Frequency Domain plot of the signals');
+
+figure;
+[nGridX nGridY] = meshgrid(linspace(min(gridX),max(gridX),100),linspace(min(gridY),max(gridY),100));
+nLambdaMax = griddata(gridX, gridY, lambdaMax,nGridX, nGridY);
+surfc(nGridX,nGridY,nLambdaMax)
+title('Position Cost Function');
+
+figure
+[nGridVx nGridVy] = meshgrid(linspace(min(gridVx),max(gridVx),100),linspace(min(gridVy),max(gridVy),100));
+nLambdaMax = griddata(gridVx, gridVy, lambdaMax,nGridVx, nGridVy);
+surfc(nGridVx,nGridVy,nLambdaMax);
+title('Velocity Cost Function');
+
+drawnow;
+
+% 
+% %************************************
+% % ******* GRADIENT SEARCH ***********
+% %************************************
+% 
+% %Init
+% 
+% DERIVATIVE_DELTA_V = 0.01; %The Veclocity Delta we use to calculate the gradient
+% DERIVATIVE_DELTA_P = 0.01;; %The Position Delta we use to calculate the gradient
+% MIU =  0.0000001; %The step coeffiecient for the gradient search
+% GRAD_THRESHOLD = 0.5    ;
+% 
+% v = v.*(1+randn(1,2)*0.1); %The initial velocity for the gradient search
+% rTransmitter = [0 0]; %The initial Position for the gradient search
+% 
+% gradient = zeros(1,4); %Initializing the gradient vector
+% gradient_norm = inf;
+% normHist = [];
+% rTransmitterHist = [];
+% vHist = [];
+%     
+% v1x = v+[DERIVATIVE_DELTA_V,0]; %The velocity we use to calculate the velocity gradient in the x direction
+% v1y = v+[0,DERIVATIVE_DELTA_V]; %The velocity we use to calculate the velocity gradient in the y direction
+% rTransmitter1x = rTransmitter + [DERIVATIVE_DELTA_P 0]; %The position we use to calculate the velocity gradient in the x direction
+% rTransmitter1y = rTransmitter + [0 DERIVATIVE_DELTA_P]; %The position we use to calculate the velocity gradient in the y direction
+% 
+% 
+% while (gradient_norm>GRAD_THRESHOLD)
+%     %Evaluate The cost function at the central position
+%     rTransmitterMat = ones(L,2)*[rTransmitter(1) 0;0 rTransmitter(2)];
+%     rDiffMat = rReceiverMat- rTransmitterMat;
+%     rDistances = sqrt(rDiffMat(:,1).^2+rDiffMat(:,2).^2);
+%     microsecDelay = rDistances/(C/1e6);
+%     sampleDelay = floor(microsecDelay*Fs/1e6);
+%     sampleMaxDelay = max(sampleDelay);
+%     %Evaluate hermitian A
+%     %    hermitianA = zeros(N,N,L);
+%     miu = zeros(L,1);
+%     dopplerFixedSignal = zeros(L,N);
+% 
+%     for l=1:L
+%         %miu calculation
+%         miu(l) = -1/C*v*rDiffMat(l,:)'/rDistances(l);
+%         %frequency calculation
+%         hzDopplerShift = Fc*miu(l);
+%         %Al Matrix
+%         %hermitianA(:,:,l) = diag(exp(2*pi*i*hzDopplerShift*(1:N)/Fs))';
+%         %dopplerFixedSignal(l,:) = (hermitianA(:,:,l)*receivedSignal(l,:).').';
+%         vHermitianA = exp(-2*pi*i*hzDopplerShift*(1:N)/Fs);
+%         dopplerFixedSignal(l,:) =(vHermitianA.*receivedSignal(l,:)).';
+%     end
+% 
+%     Ntilda = N-sampleMaxDelay;
+%     %Evaluate V
+%     V = zeros(L,Ntilda);
+%     for l=1:L
+%         V(l,:) = dopplerFixedSignal(l,(1+sampleDelay(l)):(Ntilda+sampleDelay(l)));
+%     end
+% 
+%     %Evaluate Qtilda
+% 
+% 
+%     Qtilda = V*V';
+%     %Evaluate LambdaMax(Qtilda)
+%     lambdaMax = eigs(Qtilda,1);
+% 
+% 
+%     %Evaluate The cost function for the velocity gradient in the x direction
+%     rTransmitterMat = ones(L,2)*[rTransmitter(1) 0;0 rTransmitter(2)];
+%     rDiffMat = rReceiverMat- rTransmitterMat;
+%     rDistances = sqrt(rDiffMat(:,1).^2+rDiffMat(:,2).^2);
+%     microsecDelay = rDistances/(C/1e6);
+%     sampleDelay = floor(microsecDelay*Fs/1e6);
+%     sampleMaxDelay = max(sampleDelay);
+%     %Evaluate hermitian A
+%     %    hermitianA = zeros(N,N,L);
+%     miu = zeros(L,1);
+%     dopplerFixedSignal = zeros(L,N);
+%     for l=1:L
+%         %miu calculation
+%         miu(l) = -1/C*v1x*rDiffMat(l,:)'/rDistances(l);
+%         %frequency calculation
+%         hzDopplerShift = Fc*miu(l);
+%         %Al Matrix
+%         %hermitianA(:,:,l) = diag(exp(2*pi*i*hzDopplerShift*(1:N)/Fs))';
+%         %dopplerFixedSignal(l,:) = (hermitianA(:,:,l)*receivedSignal(l,:).').';
+%         vHermitianA = exp(-2*pi*i*hzDopplerShift*(1:N)/Fs);
+%         dopplerFixedSignal(l,:) =(vHermitianA.*receivedSignal(l,:)).';
+%     end
+% 
+%     Ntilda = N-sampleMaxDelay;
+%     %Evaluate V
+%     V = zeros(L,Ntilda);
+%     for l=1:L
+%         V(l,:) = dopplerFixedSignal(l,(1+sampleDelay(l)):(Ntilda+sampleDelay(l)));
+%     end
+% 
+%     %Evaluate Qtilda
+% 
+% 
+%     Qtilda = V*V';
+%     %Evaluate LambdaMax(Qtilda)
+%     lambdaMaxV1x = eigs(Qtilda,1);
+% 
+%     %Evaluate The cost function for the velocity gradient in the y direction
+%     rTransmitterMat = ones(L,2)*[rTransmitter(1) 0;0 rTransmitter(2)];
+%     rDiffMat = rReceiverMat- rTransmitterMat;
+%     rDistances = sqrt(rDiffMat(:,1).^2+rDiffMat(:,2).^2);
+%     microsecDelay = rDistances/(C/1e6);
+%     sampleDelay = floor(microsecDelay*Fs/1e6);
+%     sampleMaxDelay = max(sampleDelay);
+%     %Evaluate hermitian A
+%     %    hermitianA = zeros(N,N,L);
+%     miu = zeros(L,1);
+%     dopplerFixedSignal = zeros(L,N);
+%     for l=1:L
+%         %miu calculation
+%         miu(l) = -1/C*v1y*rDiffMat(l,:)'/rDistances(l);
+%         %frequency calculation
+%         hzDopplerShift = Fc*miu(l);
+%         %Al Matrix
+%         %hermitianA(:,:,l) = diag(exp(2*pi*i*hzDopplerShift*(1:N)/Fs))';
+%         %dopplerFixedSignal(l,:) = (hermitianA(:,:,l)*receivedSignal(l,:).').';
+%         vHermitianA = exp(-2*pi*i*hzDopplerShift*(1:N)/Fs);
+%         dopplerFixedSignal(l,:) =(vHermitianA.*receivedSignal(l,:)).';
+%     end
+% 
+%     Ntilda = N-sampleMaxDelay;
+%     %Evaluate V
+%     V = zeros(L,Ntilda);
+%     for l=1:L
+%         V(l,:) = dopplerFixedSignal(l,(1+sampleDelay(l)):(Ntilda+sampleDelay(l)));
+%     end
+% 
+%     %Evaluate Qtilda
+% 
+% 
+%     Qtilda = V*V';
+%     %Evaluate LambdaMax(Qtilda)
+%     lambdaMaxV1y = eigs(Qtilda,1);
+% 
+%     %Evaluate The cost function for the position gradient in the x direction
+%     rTransmitterMat = ones(L,2)*[rTransmitter1x(1) 0;0 rTransmitter1x(2)];
+%     rDiffMat = rReceiverMat- rTransmitterMat;
+%     rDistances = sqrt(rDiffMat(:,1).^2+rDiffMat(:,2).^2);
+%     microsecDelay = rDistances/(C/1e6);
+%     sampleDelay = floor(microsecDelay*Fs/1e6);
+%     sampleMaxDelay = max(sampleDelay);
+%     %Evaluate hermitian A
+%     %    hermitianA = zeros(N,N,L);
+%     miu = zeros(L,1);
+%     dopplerFixedSignal = zeros(L,N);
+%     for l=1:L
+%         %miu calculation
+%         miu(l) = -1/C*v*rDiffMat(l,:)'/rDistances(l);
+%         %frequency calculation
+%         hzDopplerShift = Fc*miu(l);
+%         %Al Matrix
+%         %hermitianA(:,:,l) = diag(exp(2*pi*i*hzDopplerShift*(1:N)/Fs))';
+%         %dopplerFixedSignal(l,:) = (hermitianA(:,:,l)*receivedSignal(l,:).').';
+%         vHermitianA = exp(-2*pi*i*hzDopplerShift*(1:N)/Fs);
+%         dopplerFixedSignal(l,:) =(vHermitianA.*receivedSignal(l,:)).';
+%     end
+% 
+%     Ntilda = N-sampleMaxDelay;
+%     %Evaluate V
+%     V = zeros(L,Ntilda);
+%     for l=1:L
+%         V(l,:) = dopplerFixedSignal(l,(1+sampleDelay(l)):(Ntilda+sampleDelay(l)));
+%     end
+% 
+%     %Evaluate Qtilda
+% 
+% 
+%     Qtilda = V*V';
+%     %Evaluate LambdaMax(Qtilda)
+%     lambdaMaxP1x = eigs(Qtilda,1);
+% 
+%     %Evaluate The cost function for the position gradient in the y direction
+%     rTransmitterMat = ones(L,2)*[rTransmitter1y(1) 0;0 rTransmitter1y(2)];
+%     rDiffMat = rReceiverMat- rTransmitterMat;
+%     rDistances = sqrt(rDiffMat(:,1).^2+rDiffMat(:,2).^2);
+%     microsecDelay = rDistances/(C/1e6);
+%     sampleDelay = floor(microsecDelay*Fs/1e6);
+%     sampleMaxDelay = max(sampleDelay);
+%     %Evaluate hermitian A
+%     %    hermitianA = zeros(N,N,L);
+%     miu = zeros(L,1);
+%     dopplerFixedSignal = zeros(L,N);
+%     for l=1:L
+%         %miu calculation
+%         miu(l) = -1/C*v1x*rDiffMat(l,:)'/rDistances(l);
+%         %frequency calculation
+%         hzDopplerShift = Fc*miu(l);
+%         %Al Matrix
+%         %hermitianA(:,:,l) = diag(exp(2*pi*i*hzDopplerShift*(1:N)/Fs))';
+%         %dopplerFixedSignal(l,:) = (hermitianA(:,:,l)*receivedSignal(l,:).').';
+%         vHermitianA = exp(-2*pi*i*hzDopplerShift*(1:N)/Fs);
+%         dopplerFixedSignal(l,:) =(vHermitianA.*receivedSignal(l,:)).';
+%     end
+% 
+%     Ntilda = N-sampleMaxDelay;
+%     %Evaluate V
+%     V = zeros(L,Ntilda);
+%     for l=1:L
+%         V(l,:) = dopplerFixedSignal(l,(1+sampleDelay(l)):(Ntilda+sampleDelay(l)));
+%     end
+% 
+%     %Evaluate Qtilda
+% 
+% 
+%     Qtilda = V*V';
+%     %Evaluate LambdaMax(Qtilda)
+%     lambdaMaxP1y = eigs(Qtilda,1);
+% 
+% 
+%     gradient(1) = (lambdaMaxV1x-lambdaMax)/DERIVATIVE_DELTA_V;
+%     gradient(2) = (lambdaMaxV1y-lambdaMax)/DERIVATIVE_DELTA_V;
+%     gradient(3) = (lambdaMaxP1x-lambdaMax)/DERIVATIVE_DELTA_P;
+%     gradient(4) = (lambdaMaxP1y-lambdaMax)/DERIVATIVE_DELTA_P;
+% 
+%     gradient_norm = norm(gradient)
+%     
+%     v = v + MIU*gradient(1:2);
+%     %rTransmitter = rTransmitter + MIU*gradient(3:4);
+%     
+%     normHist = [normHist gradient_norm];
+%     rTransmitterHist = [rTransmitterHist; rTransmitter];
+%     vHist = [vHist;v];
+% end
+
+

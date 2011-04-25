@@ -1,0 +1,301 @@
+% Chapter 4
+
+\chapter{Location Algorithms} % Write in your own chapter title
+\label{Chapter4}
+\lhead{Chapter 4. \emph{Location Algorithms}} % Write in your own chapter title to set the page header
+\section{General}
+The aim of this study is to develop a localization method for moving RF transmitters that
+will have superior performance without significantly raising the algorithm complexity.\\
+While conventional algorithms estimate the TDOA and FDOA parameters from which they obtain the transmitter
+location, the suggested algorithm finds the location and velocity directly, without intermediate estimations
+and by applying a search that involves the complete data gathered from all of the base stations simultaneously. \\
+In this sense, it is an extension of the DPD algorithm, that was developed for the static transmitter and moving receivers scenario.\\
+ The proposed method performs localization of a moving RF transmitter and an estimation
+of its velocity.\\
+The unknown velocity adds to the unknown parameters of the problem, thus, increasing its
+complexity. Applying the conventional grid-search method requires a 4-dimensional grid-search for every
+estimation, drastically increasing the complexity.\\
+
+In the following sections, we will suggest algorithms for
+different scenarios, allowing to reduce the problem's complexity using gradient based methods, in the cases
+in which it was possible to differentiate the cost function.\\
+The scenarios for which we will be able to reduce complexity are mainly the scenarios in which
+the signals are known. We employ our knowledge on the cost function $L_2$ and its
+derivatives in order to perform gradient based methods in the position and velocity space to find the maximum of the cost function.\\
+In the scenario where the signal is both known and narrow band, we are able to easily preform gradient based
+methods in the position sub-space, in addition to the velocity sub-space.
+In all of the gradient based methods we will assume that the function is convex in the search area.
+The cost function is generally not convex, it is only approximately convex in a small area around its maximum.\\
+Therefore, in each of the suggested algorithms employing gradient-based methods we will have to assume that
+the start point for the algorithm is close enough to the maximum, so that it is found within the global maximum's convex area so that the algorithm is guaranteed to find the global maximum.
+At the last section of the chapter, we will try to handle the dynamic scenario where the transmitter's
+position is estimated in a number of lags along its trajectory. For this purpose we employ a simple
+dynamic model for the transmitter and use an extended Kalman filter for the dynamic estimation.
+
+\section{Known Narrow Band Signals}
+In the case where the signals are known and are narrow-band, we can use our knowledge of
+$L_2$ and its derivatives to perform gradient-based methods to avoid performing a grid-search.
+Of course, to employ the gradient-based methods we need a good initial guess on the position and
+velocity of the transmitter, which can be acquired by a rough initial grid-search, or, as we will later see
+in section (\ref{applying_kalman}), from the prediction of the Kalman filter.\\
+
+\subsection{Steepest Descent Method}
+A simple implementation of gradient based steepest descent search can be employed using the results of sections  (\ref{d_L2_dvx_d_vy}) and (\ref{d_L2_dx_d_y_NB}). 
+A starting point $$\mathbf{x}^{(0)}=[x^{(0)}, y^{(0)}, v_x^{(0)}, v_y^{(0)}]^T$$ has to be chosen using an initial guess, a-priori information about the location and velocity of the transmitter or using a rough grid-search.
+At the $k$-th step we can choose: 
+\begin{equation}
+\mathbf{x}^{k+1}=\mathbf{x}^{k}+\alpha \nabla L_2 |_{\mathbf{x}^k}
+\end{equation}
+
+Where:
+\begin{equation}
+ \nabla L_2  = [\frac{\partial L_2}{x},\frac{\partial L_2}{y},\frac{\partial L_2}{v_x},\frac{\partial L_2}{v_y}]^T 
+\end{equation}
+
+We represent the stepsize with $\alpha$. There are many methods to determine the optimal stepsize, and usually there is a trade-off between optimality and complexity. The simplest choice is the constant stepsize. However, choosing a constant stepsize should be done carefully. If the stepsize is too large, divergence will occur, if the stepsize is too small, the rate of convergence may be very slow. Other common methods are the minimization rule, the Armijo rule, the Goldstein rule and the diminishing stepsize method. \\
+The steepest descent search is very simple to derive and implement, but often leads to slow convergence rates.\\
+
+\subsection{Gauss-Newton Method}
+In order to achieve higher convergence rates, we can employ the Gauss-Newton method, described in \cite{gauss_newton_method}, trying to minimize the least squares cost $\frac{1}{2}\|g(\mathbf{x})\|^2$. 
+Small adjustments need to be made in order to use the method to effectively find a maximum of the above cost function, rather than its minimum.
+We define $\mathbf{x}$ as the unknown parameters vector:
+
+\begin{equation*}
+\mathbf{x} \triangleq \left[ x,y,v_x,v_y \right]^T
+\end{equation*}
+
+And therefore:
+\begin{equation*}
+\nabla \triangleq \left[\frac{\partial}{\partial x}, \frac{\partial}{\partial y}, \frac{\partial}{\partial v_x},
+\frac{\partial}{\partial v_y}\right]
+\end{equation*}
+
+In order to use the notation in (\ref{eq:L_2Def}) we choose:
+$g(\mathbf{x})=\sqrt{2} \begin{pmatrix} Re\{V^H \mathbf{u}\} \\Im\{V^H \mathbf{u}\} \end{pmatrix}$ \\
+notice that $\mathbf{u}$ is the known transmitted signal.
+we get:
+\begin{equation}
+\frac{1}{2}\|g(\mathbf{x})\|^2=\|\Re\{V^H \mathbf{u}\}\|^2+\|\Im\{V^H \mathbf{u}\}\|^2 = \|V^H\mathbf{u} \|^2 = L_2
+\end{equation}
+Thus, we can use the iterative method proposed:
+\begin{equation}
+\mathbf{x}^{k+1}=\mathbf{x}^k +\left(\nabla g(\mathbf{x}^k)\nabla g(\mathbf{x}^k)^T\right)^{-1} \nabla g(\mathbf{x}^k) g(\mathbf{x}^k)
+\end{equation}
+Where:
+\begin{equation}
+\nabla g(\mathbf{x^k}) = \sqrt{2}
+\begin{pmatrix} 
+\nabla Re\{V^H\mathbf{u}\} \\ \nabla Im\{V^H\mathbf{u}\} 
+\end{pmatrix}= \sqrt{2}
+\begin{pmatrix} 
+Re \{\nabla (V^H\mathbf{u})\} \\ Im\{\nabla (V^H\mathbf{u})\} 
+\end{pmatrix}
+\end{equation}
+And:
+\begin{equation}
+\nabla V^H\mathbf{u}\ = -2 \pi j T_s \frac{f_c}{c}
+\begin{pmatrix}  
+\tilde{\Theta}_x V^H \tilde{N} \mathbf{u} &
+\tilde{\Theta}_y V^H \tilde{N} \mathbf{u} &
+\tilde{\Theta}_{v_x} V^H \tilde{N} \mathbf{u} &
+\tilde{\Theta}_{v_y} V^H \tilde{N} \mathbf{u}
+\end{pmatrix}
+\end{equation}
+Where: 
+\begin{eqnarray}
+\tilde{\Theta}_x = diag \left[-\frac{\|\vec{v}\|}{d_1} \sin \phi_1 \sin \theta_1, \dots ,-\frac{\|\vec{v}\|}{d_L} \sin \phi_L \sin \theta_L \right] \\
+\tilde{\Theta}_y = diag \left[\frac{\|\vec{v}\|}{d_1} \sin \phi_1 \cos \theta_1, \dots ,\frac{\|\vec{v}\|}{d_L} \sin \phi_L \cos \theta_L \right]\\
+\tilde{\Theta}_{v_x} = diag \left[cos \theta_1, \dots ,cos \theta_L \right] \\
+\tilde{\Theta}_{v_y} = diag \left[sin \theta_1, \dots ,sin \theta_L \right]
+\end{eqnarray}
+Note that the direction used in the above iteration is a climb direction since 
+$\nabla g(\mathbf{x}^k) g(\mathbf{x}^k)$ is the gradient at $\mathbf{x}^k$ of the cost function
+$\frac{1}{2}\|g(\mathbf{x})\|^2$ and $\left(\nabla g(\mathbf{x}^k)\nabla g(\mathbf{x}^k)^T\right)^{-1}$ is a positive definite matrix.
+
+
+\section{Known Wide Band Signals}
+
+\subsection{Steepest Descent Method}
+
+Implementing the steepest descent gradient based search method is very similar to the known narrow band signals scenario. The only difference is that the derivatives $\frac{\partial L_2}{\partial x}$ and $\frac{\partial L_2}{\partial y}$ that need to be used are the ones derived for the wide band known signals scenario in section (\ref{d_L2_dx_dy_WB}).
+
+\subsection{Gauss-Newton Method}
+
+In the wide-band known signals scenario, the derivatives $\frac{\partial L_2}{\partial x}$ and $\frac{\partial L_2}{\partial y}$ are more complex, and the expressions for the Gauss-Newton method in the entire position and velocity space are much less elegant.
+
+Therefore, we can suggest to perform a grid search, or a steepest descent search in the position subspace, and employ the Gauss-Newton method in the velocity sub-space as follows.\\
+
+Exactly like the at previous section, we have:
+\begin{equation}
+g(\mathbf{x})=\sqrt{2} \begin{pmatrix} Re\{V^H \mathbf{u}\} \\Im\{V^H \mathbf{u}\} \end{pmatrix}
+\end{equation}
+
+only that $\mathbf{x}$ contains only the velocity unknown parameters, meaning: 
+\begin{equation}
+\mathbf{x} \triangleq \left[ v_x, v_y \right]^T
+\end{equation}
+
+And therefore:
+\begin{equation}
+\nabla \triangleq \left[\frac{\partial}{\partial v_x},
+\frac{\partial}{\partial v_y}\right]
+\end{equation}
+
+We can see that:
+\begin{equation}
+\frac{1}{2}\|g(\mathbf{x})\|^2=\|Re\{V^H \mathbf{u}\}\|^2+\|Im\{V^H \mathbf{u}\}\|^2 = \|V^H\mathbf{u} \|^2 = L_2
+\end{equation}
+
+We can use the iterative method suggested:
+\begin{equation}
+\mathbf{x}^{k+1}=\mathbf{x}^k +\left(\nabla g(\mathbf{x}^k)\nabla g(\mathbf{x}^k)^T\right)^{-1} \nabla g(\mathbf{x}^k) g(\mathbf{x}^k)
+\end{equation}
+
+Where:
+\begin{equation}
+\nabla g(\mathbf{x}^k) = 
+\begin{pmatrix} 
+\nabla Re\{V^H\mathbf{u}\} \\ \nabla Im\{V^H\mathbf{u}\} 
+\end{pmatrix}=
+\begin{pmatrix} 
+Re \{\nabla V^H\mathbf{u}\} \\ Im\{\nabla V^H\mathbf{u}\} 
+\end{pmatrix}
+\end{equation}
+And:
+\begin{equation}
+\nabla V^H\mathbf{u}\ = -2 \pi j T_s \frac{f_c}{c}
+\begin{pmatrix}  
+\tilde{\Theta}_{v_x} V^H \tilde{N} \mathbf{u} &
+\tilde{\Theta}_{v_y} V^H \tilde{N} \mathbf{u}
+\end{pmatrix}
+\end{equation}
+Where: 
+\begin{eqnarray}
+\tilde{\Theta}_{v_x} = diag \left[cos \theta_1, \dots ,cos \theta_L \right] \\
+\tilde{\Theta}_{v_y} = diag \left[sin \theta_1, \dots ,sin \theta_L \right]
+\end{eqnarray}
+
+\section{Unknown Signals}
+In the case of unknown signals, we do not have explicit expressions for the derivatives of the cost function $L_3$ in the position subspace or in the velocity subspace.
+Therefore, we need to perform a grid search both in the velocity subspace and in the position subspace or we can perform a gradient search based method, where the gradient is derived numerically.
+
+\section{Applying the Extended Kalman Filter}
+\label{applying_kalman}
+So far, we handled the semi-static scenario in which we did not take into consideration
+the dynamic motion model of the transmitter. In the semi-static scenario we estimated
+the position and velocity of the transmitter in one observation interval.\\
+In this section, we will use a simple constant velocity dynamic motion model, together
+with the extended Kalman filter, to take into consideration the motion of the transmitter
+and to improve the position and velocity estimation of the transmitter over time.\\
+We call this method - The Extnded Kalman Filter - because the measurement noise is not
+necessarily Gaussian, although we assume it is.\\
+In our scenario, the state vector is:
+
+\begin{equation}
+\mathbf{x} = \begin{pmatrix}x \\ v_x \\ y \\ v_y\end{pmatrix}
+\end{equation}
+
+We assume that between each step the transmitter undergoes a constant acceleration of $\mathbf{a_k}$ that is normally distributed, with zero mean and covariance matrix:
+
+\begin{equation}
+R = \begin{pmatrix} \sigma^2_{a_x} & 0 \\ 0 & \sigma^2_{a_y} \end{pmatrix}
+\end{equation}
+
+From Newton's Law:
+\begin{equation}
+\mathbf{x}_k = F \mathbf{x}_{k-1}+G\mathbf{a}_k
+\end{equation}
+
+Where:
+
+\begin{equation}
+F = 
+\begin{pmatrix}
+1 & \Delta t & 0 & 0\\
+0 & 1 & 0 & 0\\
+0& 0& 1 & \Delta t\\
+0& 0& 0& 1
+\end{pmatrix}
+\end{equation}
+
+And:
+
+\begin{equation}
+G = 
+\begin{pmatrix} 
+\frac{\Delta t^2}{2} & 0 \\
+\Delta t & 0\\
+0 & \frac{\Delta t^2}{2}\\
+0& \Delta t\\
+\end{pmatrix}
+\end{equation}
+
+So that:
+\begin{equation}
+\mathbf{x}_{k} = F \mathbf{x}_{k-1}+\mathbf{w}_{k}
+\end{equation}
+
+Where $\mathbf{w}_{k} \sim N(0,Q)$
+\begin{eqnarray}
+Q = GRG^T = \\
+&=& \begin{pmatrix} 
+\frac{\Delta t^2}{2} & 0 \\
+\Delta t & 0\\
+0 & \frac{\Delta t^2}{2}\\
+0& \Delta t\\
+\end{pmatrix} 
+\begin{pmatrix} \sigma^2_{a_x} & 0 \\ 0 & \sigma^2_{a_y} \end{pmatrix}
+\begin{pmatrix} 
+\frac{\Delta t^2}{2} & 0 \\
+\Delta t & 0\\
+0 & \frac{\Delta t^2}{2}\\
+0& \Delta t\\
+\end{pmatrix} ^T  = \nonumber \\
+&=& 
+\begin{pmatrix}
+\frac{\Delta t^2}{4}\sigma^2_{a_x} &\frac{\Delta t^3}{2}\sigma^2_{a_x} &0&0\\
+\frac{\Delta t^3}{2}\sigma^2_{a_x} & \Delta t^2 \sigma^2_{a_x}&0&0 \\
+0&0& \frac{\Delta t^2}{4}\sigma^2_{a_y} &\frac{\Delta t^3}{2}\sigma^2_{a_y}\\
+0&0&\frac{\Delta t^3}{2}\sigma^2_{a_y} & \Delta t^2 \sigma^2_{a_y}
+\end{pmatrix} \nonumber
+\end{eqnarray}
+At each time step, using one of the semi-static algorithm suggested in the previous sections, a
+measurement of the position and velocity of the transmitter is made.
+\\
+Let us assume that measurement noise, caused by our estimation error, $\mathbf{\nu}_{k}$ is
+zero mean, with covariance matrix $R_z$. We can use the CRB as an estimation for the measurement noise covariance matrix $R_z$.\\
+
+Thus, our measurement model takes the form:
+\begin{equation}
+\mathbf{z}_{k} = H \mathbf{x}_{k}+ \mathbf{\nu}_{k}
+\end{equation}
+Where:
+\begin{equation}
+H=I
+\end{equation}
+Using the definitions above we can use the standard Kalman filter algorithm:
+\\
+
+Prediction for the state vector and variance:
+\begin{eqnarray}
+\mathbf{\hat{x}}_{{k|k-1}} = F \mathbf{\hat{x}}_{{k-1|k-1}}\\
+\hat{P}_{k|k-1} = F \hat{P}_{k-1|k-1}F^T+Q
+\end{eqnarray}
+
+The Kalman gain factor:
+\begin{equation}
+K_k = \hat{P}_{k|k-1} H^T(H\hat{P}_{k|k-1}H^T+R_z)^{-1}
+\end{equation}
+
+Correction based on observation:
+\begin{eqnarray}
+\mathbf{\hat{x}}_{{k|k}} = \mathbf{\hat{x}}_{{k|k-1}} +K_k(\mathbf{z}_k-H\mathbf{\hat{x}}_{{k|k-1}})\\
+\hat{P}_{k|k} = (I-K_kH)\hat{P}_{k|k-1}
+\end{eqnarray}
+
+For Initialization we can choose:
+\begin{eqnarray*}
+\mathbf{\hat{x}}_{0|0}=\mathbf{z}_0\\
+P_{0|0} = CRB
+\end{eqnarray*}
+Where we use the first measurement as the best estimate for the position and velocity, and the Cramer-Rao lower bound as a good estimate for the estimator accuracy.

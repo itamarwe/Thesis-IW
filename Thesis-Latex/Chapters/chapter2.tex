@@ -1,0 +1,282 @@
+% Chapter 1
+
+\chapter{Problem Formulation} % Write in your own chapter title
+\label{Chapter2}
+\lhead{Chapter 2. \emph{Problem Formulation}} % Write in your own chapter title to set the page header
+
+\section{General}
+Consider $L$ stationary radio receivers and a moving transmitter. The receivers are synchronized in frequency and time. Let  $\vec{p_\ell}$ $l\in{\{1..L\}}$ denote the positions of the stationary receivers. Let $\vec{v}=(v_x,v_y)$, $\vec{p}=(x,y)$ denote the velocity and position of the moving transmitter respectively, as can be seen in figure (\ref{fig:geometry}).\\
+
+The complex signal observed by the l-th receiver at time t:
+
+\begin{equation}
+\label{eq:r_lDef}
+r_\ell(t)=b_\ell s(t-T_\ell )e^{j2\pi \tilde{f_\ell} t}+w_\ell(t),  0\leq t\leq T                                              
+\end{equation}
+
+Where $T$ is the observation time interval, $s(t)$ is the observed signal envelope, $b_\ell$ is an unknown complex path attenuation, $T_\ell \triangleq \frac{1}{c}\|\vec{p} -\vec{p_\ell}\|$ is the signal's delay where $c$ is the signal's propagation speed, $w_\ell (t)$ is a wide sense stationary additive white zero mean complex Gaussian noise with flat spectrum and $\tilde{f_\ell}$ is given by:\\
+
+The frequency received at the $\ell$ - th receiver: 
+\begin{equation}
+\label{eq:f_lDef}
+\tilde{f_\ell}\triangleq[f_c+\nu][1+\mu_\ell (\vec{p} ,\vec{v})]                 
+\end{equation}
+
+ The frequency shift caused by the Doppler Effect:
+\begin{equation} 
+\mu_\ell \triangleq -\frac{1}{c} \frac{\vec{v}(\vec{p}-\vec{p_\ell})}{\|\vec{p}-\vec{p_\ell}\|}                             
+\end{equation}
+
+Where  $f_c$ is the known nominal carrier frequency of the transmitted signal, and $\nu$ is the unknown transmitted frequency shift due to the source instability during the interception interval.
+Since $\mu_\ell \ll 1$ and $\nu \ll f_c$, equation (\ref{eq:f_lDef}) can be approximated as $\tilde{f_\ell}\approx \nu+f_c [1+\mu_\ell (\vec{p},\vec{v})]$ where the term $\nu\mu_\ell (\vec{p},\vec{v})$, which is negligible with respect to all other terms, is omitted . Also, since $f_c$ Is known to the receivers, each receiver performs a down conversion of the intercepted signal by $f_c$ and (\ref{eq:f_lDef}) can be replaced by:
+\begin{equation}
+\label{eq:tildef_lapprox}
+\tilde{f_\ell} \approx \nu+ f_\ell (\vec{p},\vec{v})                                                                      
+\end{equation}
+Where we defined the frequency shift caused by the Doppler effect $f_\ell$ as follows:
+\begin{equation}
+f_\ell(\vec{p},\vec{v}) \triangleq f_c \mu_\ell(\vec{p},\vec{v})
+\end{equation}
+
+
+\begin{figure}[h]
+\scalebox{0.5}[0.5]{
+\includegraphics[0,0][690,543]{fig1.jpg}
+}
+\centering
+\caption[Scenario Geometry]
+{Scenario Geometry. $\vec{p}$ and $\vec{v}$ denote the transmitter's position and velocity respectively. 
+$\vec{p_\ell}$ is the position of the $\ell$-th receiver. $d_\ell$ is the distance between the transmitter and the $\ell$-th receiver. $\Theta_\ell$ is the angle between the line connecting the transmitter and the $\ell$-th receiver and the $x$-axis. $\phi_\ell$ is the angle between the transmitter's velocity and the line connecting the transmitter and the $\ell$-th receiver}
+\label{fig:geometry}
+\end{figure}
+
+\section{Narrow-Band Time Domain Analysis}
+In the proceeding section we analyse the narrow-band signal scenario.
+In the narrow-band scenario we assume that the change rate of the envelope of the transmitted signal is sufficiently small, so that the signal envelopes seen in all of the receivers is identical.\\
+
+The narrow-band scenario analysis is brought here because of its slight relative simplicity compared to the wide-band scenario, and because we use this formulation later in this work to derive lower complexity methods to solve the problem presented.\\
+
+We start by introducing the assumptions and definitions of the narrow-band scenario and later introduce the ML estimator for the narrow-band scenario.
+
+\subsection{Definitions}
+We assume that the signal's bandwidth (change rate) is small compared to the inverse of the propagation time between the receivers. i.e. $B<c/d$, where $d$ is a typical distance between the receivers. We can then assume that the signal's envelope is similar at all of the spatially separated receivers, meaning: $s(t-T_\ell )\approx s(t)$.\\
+ 
+The down converted signal is sampled at times $t_n=nT_s$ where $n\in\{0..N-1\}$ and $T_s =\frac{T}{N-1}$.
+The signal at the interception interval is given as $r_\ell [n]=r_\ell (nT_s)$, and equation (\ref{eq:r_lDef}) can be written in a vector form as:
+\begin{equation}
+\mathbf{r_\ell}=b_\ell \mathbf{A_\ell}\mathbf{C} \mathbf{s} + \mathbf{w_\ell}
+\end{equation}
+
+Where:
+
+\begin{equation}
+\mathbf{A_\ell} \triangleq diag\{1,e^{2 \pi j f_\ell  T_s},\dots,e^{2 \pi j f_\ell (N-1) T_s} \}                                                         
+\end{equation}
+$\mathbf{A_\ell}$ is a frequency shift operator, shifting the signal by the Doppler frequency shift related to the $\ell$-th receiver $f_\ell$.
+\begin{equation}
+\mathbf{C} \triangleq diag \{1  ,e^{2 \pi j \nu T_s},\dots,e^{2 \pi j \nu (N-1) T_s }\}                                                         
+\end{equation}
+$\mathbf{C}$ is a frequency shift operator, shifting the signal by the unknown frequency shift caused by the transmitter instability $\nu$.
+\begin{equation}
+s[n] \triangleq s(nT_s)                                                                                                          
+\end{equation}
+$s[n]$ is the original transmitted signal sampled at discrete times $nT_s$.
+\begin{equation}
+w_\ell [n] \triangleq w_\ell (nT_s)                                                                                                       
+\end{equation}
+$w_\ell [n]$ is the noise observed by the $\ell$-th receiver, sampled at times $nT_s$.\\
+
+Note that $\mathbf{A_\ell}$  is a function of the unknown emitter position and velocity while $\mathbf{C}$ is a function of the unknown transmitted frequency.
+Here we assume that the signal's envelope is the same in all of the receivers.
+
+\subsection{ML Estimator}
+
+The log-likelihood function of the observation vectors is given (up to an additive constant) by:
+\begin{equation}
+\label{eq:L_1def}
+L_1 = -\frac{1}{\sigma{2}} \sum_{l=1}^{L} \|\mathbf{r_\ell} - b_\ell A_\ell C \mathbf{s}\|^2                                                             
+\end{equation}
+
+The path attenuation factors that maximize Eq. (\ref{eq:L_1def}) are given by:
+\begin{equation}
+\label{eq:b_lCalc}
+b_\ell = [(A_\ell C \mathbf{s})^{H} A_\ell C \mathbf{s}]^{-1}(A_\ell C \mathbf{s})^{H} \mathbf{r_\ell} = (A_\ell C \mathbf{s})^{H} \mathbf{r_\ell}
+\end{equation}
+Where we assume, without loss of generality, that $\|s \|^{2}=1$ and use the special structure of $A_\ell$
+and $C$.\\
+Substitution of Eq. (\ref{eq:b_lCalc}) into Eq. (\ref{eq:L_1def}) yields:
+\begin{equation}
+\label{eq:L_1Def2}
+L_1=-\frac{1}{\sigma^2} [\sum_{l=1}^{L}\|\mathbf{r_\ell}\|^2 -\|(A_\ell C \mathbf{s})^H \mathbf{r_\ell}\|^2]
+\end{equation}
+
+Since $r_\ell$ is independent of the parameters, then instead of maximizing Eq. (\ref{eq:L_1Def2}), we can now maximize:
+\begin{equation}
+\label{eq:L_2Def}
+L_2=\sum_{l=1}^{L}\|(A_\ell C \mathbf{s})^H \mathbf{r_\ell}\|^2=\mathbf{u}^HQ\mathbf{u}
+\end{equation}
+
+Where we defined:
+\begin{equation}
+\mathbf{u} \triangleq C \mathbf{s}
+\end{equation}
+
+\begin{equation}
+V \triangleq [A_1^H \mathbf{r_1},\dots,A_L^H \mathbf{r_L}]                                                        
+\end{equation}
+
+\begin{equation}
+Q \triangleq V V^H
+\end{equation}
+
+If the original transmitted is known, $L_2$ can be used as the known-signals cost function.
+The maximum likelihood estimation of the position and velocity for the known signals scenario is the maximum of the $L_2$ cost function:
+\begin{equation}
+(\hat{\vec{p}},\hat{\vec{v}}) = \text{argmax}_{(\vec{p},\vec{v})}L_2(\vec{p},\vec{v})
+\end{equation}
+
+If the original signal is unknown, in order to maximize the cost function, $\mathbf{u}$ should be selected as the eigenvector corresponding to the largest eigenvalue of the matrix $Q$.\\
+
+Therefore, the cost function $L_2$ reduces to
+\begin{equation}
+L_3= \lambda_{max} \{Q\}
+\end{equation}
+
+Notice that $Q$ is a $N \times N$ Matrix. In certain applications $N$, which is the length of the sampled signals, can be quite large and finding the largest eigenvalue of a $N \times N$ matrix can create a high computational load.
+By using the known theorem that given a matrix $X$, the non zero eigenvalues of $XX^H$ and $X^H X$ are identical, we can replace the $N \times N$ matrix with a $L \times L$ matrix: 
+\begin{equation}
+\tilde{Q} \triangleq  V^H V 
+\end{equation}
+
+So that:
+
+\begin{equation}
+L_3= \lambda_{max} \{Q\} = \lambda_{max} \{\tilde{Q}\}
+\end{equation}
+
+The maximum likelihood estimation of the position and velocity for the unknown signals scenario is the maximum of the $L_3$ cost function:
+\begin{equation}
+(\hat{\vec{p}},\hat{\vec{v}}) = \text{argmax}_{(\vec{p},\vec{v})}L_3(\vec{p},\vec{v})
+\end{equation}
+
+Because the cost functions are non linear, deriving an explicit solution for the problem is not possible and employing various search methods is necessary in order to find its maximum.
+
+
+\section{Wide-Band Time Domain Analysis}
+In the following section we introduce the analysis of the scenario in which the signal is wide-band. 
+Although we do not make any further simplifying assumptions, the problem formulation and ML estimator derivation is similar to the narrow-band scenario.\\
+
+We start by introducing the assumptions and definitions of the wide-band scenario, and later derive the ML estimator for the wide-band scenario.
+
+\subsection{Definitions}
+The down converted signal is sampled at times $t_n=nT_s$ where $n\in\{0..N-1\}$ and $T_s =\frac{T}{N-1}$.
+The signal at the interception interval is given as $r_\ell [n]=r_\ell (nT_s)$, and equation (\ref{eq:r_lDef}) can be written in a vector form as:
+
+\begin{equation}
+\label{eq:r_lWBDef}
+\mathbf{r_\ell}=b_\ell A_\ell F_\ell C \mathbf{s} + \mathbf{w_\ell}
+\end{equation}
+
+Where:
+\begin{equation}
+A_\ell \triangleq diag\{1,e^{2 \pi j f_\ell  T_s},\dots,e^{2 \pi j f_\ell (N-1) T_s} \}                                                         
+\end{equation}
+
+$A_\ell$ is a frequency shift operator, shifting the signal by the Doppler frequency shift related to the $\ell$-th receiver $f_\ell$.
+
+\begin{equation}
+C \triangleq diag \{1  ,e^{2 \pi j \nu T_s},\dots,e^{2 \pi j \nu (N-1) T_s }\}                                                         
+\end{equation}
+
+$C$ is a frequency shift operator, shifting the signal by the unknown frequency shift caused by the transmitter instability $\nu$.
+
+\begin{equation}
+s[n] \triangleq s(nT_s)                                                                                                           
+\end{equation}
+
+$s[n]$ is the original transmitted signal sampled at discrete times $nT_s$.
+
+\begin{equation}
+w_\ell[n] \triangleq w_\ell(nT_s)                                                                                                        
+\end{equation}
+$w_\ell [n]$ is the noise observed by the $\ell$-th receiver, sampled at times $nT_s$.\\
+
+$F_\ell$ is a downshift operator. The product $F_\ell$ shifts the vector $\mathbf{s}$ by $\lfloor ^{T_\ell}/_{T_s} \rfloor$ indices.
+Note that $A_\ell$ is a function of the unknown emitter position and velocity, $F_\ell$ is a function of the unknown emitter position, while $C$ is a function of the unknown transmitted frequency.
+ 
+\subsection{ML estimator}
+The log-likelihood function of the observation vectors is given (up to an additive constant) by:
+\begin{equation}
+\label{eq:L_1WBdef}
+L_1 = -\frac{1}{\sigma{2}} \sum_{l=1}^{L} \|\mathbf{r_\ell} - b_\ell A_\ell F_\ell C \mathbf{s}\|^2                                                             
+\end{equation}
+
+The path attenuation factors that maximize Eq. (\ref{eq:L_1WBdef}) are given by:
+\begin{equation}
+\label{eq:b_lWBdef}
+b_\ell = [(A_\ell F_\ell C \mathbf{s})^{H} A_\ell F_\ell C \mathbf{s}]^{-1}(A_\ell F_\ell C \mathbf{s})^{H} \mathbf{r_\ell} = (A_\ell F_\ell C \mathbf{s})^{H} \mathbf{r_\ell}
+\end{equation}
+
+Where we assume, without loss of generality that $\|\mathbf{s}\|^2=1$ and use the special structure of $A_\ell$ and $C$.
+Substitution of Eq. (\ref{eq:b_lWBdef}) into Eq. (\ref{eq:L_1WBdef}) yields:
+\begin{equation}
+\label{eq:L_1WBdef2}
+L_1=-\frac{1}{\sigma^2} [\sum_{(l=1)}^{L}\|\mathbf{r_\ell}\|^2 -\|(A_\ell F_\ell C \mathbf{s})^H \mathbf{r_\ell}\|^2]
+\end{equation}
+Since $\mathbf{r_\ell}$ is independent of the parameters, then instead of maximizing Eq. (\ref{eq:L_1WBdef2}), we can now maximize:
+
+\begin{equation}
+\label{eq:L_2WBdef}
+L_2=\sum_{(l=1)}^{L}\|(A_\ell F_\ell C \mathbf{s})^H \mathbf{r_\ell}\|^2 = \mathbf{u}^HQ\mathbf{u}
+\end{equation}
+
+Where:
+
+\begin{equation}
+u \triangleq C \mathbf{s}
+\end{equation}
+
+\begin{equation}
+Q \triangleq V V^H
+\end{equation}
+
+
+\begin{equation}
+V \triangleq [F_1^H A_1^H \mathbf{r_1},\dots ,F_L^H A_L^H \mathbf{r_L}]                                                        
+\end{equation}
+
+If the original transmitted is known, $L_2$ can be used as the wide-band known-signals cost function.
+The maximum likelihood estimation of the position and velocity for the known signals scenario is the maximum of the $L_2$ cost function:
+\begin{equation}
+(\hat{\vec{p}},\hat{\vec{v}}) = \text{argmax}_{(\vec{p},\vec{v})}L_2(\vec{p},\vec{v})
+\end{equation}
+
+If the original signal is unknown, in order to maximize the cost function, $\mathbf{u}$ should be selected as the eigenvector corresponding to the largest eigenvalue of the matrix $Q$.\\
+
+Therefore, the cost function $L_2$ reduces to
+
+\begin{equation}
+L_3=\lambda_{max}\{Q\}
+\end{equation}
+
+Notice that $Q$ is a $N \times N$ Matrix. In certain applications $N$, which is the length of the sampled signals, can be quite large and finding the largest eigenvalue of a $N \times N$ matrix can create a high computational load.
+By using the known theorem that given a matrix $X$, the non zero eigenvalues of $XX^H$ and $X^H X$ are identical, we can replace the $N \times N$ matrix with an $L \times L$ matrix. 
+
+\begin{equation}
+\tilde{Q}  \triangleq V^H V                                                                               
+\end{equation}
+
+So that:
+\begin{equation}
+L_3=\lambda_{max}\{Q\} = \lambda_{max}\{\tilde{Q}\} 
+\end{equation}
+
+
+The maximum likelihood estimation of the position and velocity for the unknown signals scenario is the maximum of the $L_3$ cost function:
+\begin{equation}
+(\hat{\vec{p}},\hat{\vec{v}}) = \text{argmax}_{(\vec{p},\vec{v})}L_3(\vec{p},\vec{v})
+\end{equation}
+
+Because the cost functions are non linear, deriving an explicit solution for the problem is not possible and employing various search methods is necessary in order to find its maximum.
+
+Section (\ref{sec:experimental_study}) presents several simulation results that demonstrate the behaviour of the cost function for various scenarios and for various signals. The simulation results provide some understanding on the behaviour of the cost function and its complexities, and could provide some intuition to the discussed problem.

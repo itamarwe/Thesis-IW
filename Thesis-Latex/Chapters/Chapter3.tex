@@ -1,0 +1,474 @@
+% Chapter 1
+
+\chapter{Exploring the cost function $L_2$} % Write in your own chapter title
+\label{Chapter3}
+\lhead{Chapter 3. \emph{Exploring the cost function $L_2$}} % Write in your own chapter title to set the page header
+
+In this section, we will try to analyse the cost function $L_2$, in order to get
+some insight about its behaviour. We will also develop the derivatives of $L2$ by the position and velocity in order to use them in gradient based search methods for finding its maximum.
+Because $L_2$ requires the knowledge of the transmitted signal, it is mainly useful for
+the case in which the transmitted signal is known.
+\\
+It is important to remember that given a received signal, $L_2$ is a function
+of the evaluated transmitter's position and velocity estimates, meaning $L_2(\vec{p},\vec{v})$.
+The dependency of the cost function in these parameters is expressed by $A_\ell$ that depends
+on the relative speed and position between the transmitter and the receiver, and by $F_\ell$ that depends
+on the relative distance between the transmitter and the receiver.
+
+\section{Zero Noise Analysis - Simplified Scenario}
+
+In order to simplify the analysis, we will use a few assumptions in the proceeding subsection.
+We will assume that $b_\ell=1$ $\forall l\in\{1\dots L\}$, that there is no source instability, meaning $\nu=0$ so that $C=I$,and that the signal is narrow-band, meaning $F_\ell=I$ $\forall l\in\{1\dots L\}$.
+
+Remembering that (from (\ref{eq:r_lWBDef})):
+$$\mathbf{r_\ell}=b_\ell A_\ell F_\ell C \mathbf{s} + \mathbf{w_\ell}$$
+We can write:
+\begin{equation}
+\mathbf{r_\ell}= A^{(0)}_\ell \mathbf{s}
+\end{equation}
+Where we used the assumptions that $b_\ell=1$, $C=I$, $F_\ell=I$, $\mathbf{w}_\ell=0$. $A^{(0)}_\ell$, represents the
+true Doppler frequency shift caused by the relative speed of the transmitter and the emitters.
+
+Thus:
+
+\begin{equation}
+\label{eq:simplifiedanalysis1}
+(A_\ell\mathbf{s})^H\mathbf{r_\ell}=(A_\ell\mathbf{s})^H(A^{(0)}_\ell \mathbf{s})
+\end{equation}
+
+Therefore:
+
+\begin{equation}
+\|(A_\ell\mathbf{s})^H\mathbf{r_\ell}\|^2=\|(A_\ell\mathbf{s})^H(A^{(0)}_\ell \mathbf{s})\|^2=\|\mathbf{s}^H A_\ell^H A^{(0)}_\ell \mathbf{s}\|^2
+\end{equation}
+
+Defining:
+\begin{equation}
+D_\ell = A_\ell^H A^{(0)}_\ell
+\end{equation}
+Where $D_\ell$ is a frequency shift operator, shifting the signal by $f^{(0)}_\ell-f_\ell$ where $f^{(0)}_\ell$ is
+the true Doppler shift of the signal received by the $\ell$-th receiver and $f_\ell$ is the expected doppler shift for a transmitter in the evaluated position and velocity $(\vec{p},\vec{v})$.\\
+We can see that:
+
+\begin{equation}
+\|(A_\ell\mathbf{s})^H\mathbf{r_\ell}\|^2 = \|\mathbf{s}^H D_\ell \mathbf{s}\|^2
+\end{equation}
+Which is the squared absolute value of the correlation between the signal shifted by $f^{(0)}_\ell-f_\ell$ and the original signal.
+
+
+\begin{equation}
+L_2 = \sum_{l=1}^L \|(A_\ell\mathbf{s})^H\mathbf{r_\ell}\|^2 = \sum_{l=1}^L \|\mathbf{s}^H D_\ell \mathbf{s}\|^2
+\end{equation}
+Which is the sum of squared absolute value of the correlation between the signal shifted by $f^{(0)}_\ell-f_\ell$ and the original signal.
+We can easily see that the maximum of the simplified $L_2$ function will occur when 
+$\forall l \in \{1 \dots L \}$, $\mathbf{D_\ell}=I$, meaning that $\forall l \in \{1 \dots L \}$, 
+$f_\ell = f^{(0)}_\ell$.
+Notice that if the location of the receivers is known with infinite accuracy, the maximum
+of the simplified cost function $L_2$ occurs at the true position of the transmitter.\\
+If the there is an error in the known position of the receivers, there might not be a transmitter position and velocity ($\vec{p}, \vec{v}$) for which $\forall l \in\{1\dots L\}$, $\mathbf{D_\ell}(\vec{p},\vec{v}) = I$ and there is no guarantee that the maximum of the cost function occurs at the true transmitter position.
+\\
+We can notice that for the simplified scenario $\mathbf{D_\ell}(\vec{p},\vec{v})$ is actually a function of
+$(\|\vec{v}\|cos\phi_\ell)$, and it can be written as $\mathbf{D_\ell}(\|\vec{v}\|cos\phi_\ell)$.
+
+
+\section{Noisy Analysis - Simplified Scenario}
+In this subsection we will try to analyse the effect of the noise in the receiver on the
+cost function.
+\\
+
+If we consider the noise, we can write: $$ \mathbf{r_\ell}=A^{(0)}_\ell \mathbf{s}+\mathbf{w_\ell}$$
+
+Then (\ref{eq:simplifiedanalysis1}) becomes:
+
+\begin{equation}
+(A_\ell\mathbf{s})^H\mathbf{r_\ell}=(A_\ell\mathbf{s})^H(A^{(0)}_\ell \mathbf{s}+\mathbf{w_\ell})=\mathbf{s}^H D_\ell \mathbf{s}+ \mathbf{s}^H A_\ell^H \mathbf{w_\ell}
+\end{equation}
+
+So:
+
+\begin{eqnarray}
+\label{eq:three_eight}
+L_2^{(\ell)}= \\
+&=& \|(A_\ell\mathbf{s})^H\mathbf{r_\ell}\|^2 = \nonumber\\ 
+&=&\|\mathbf{s}^H D_\ell \mathbf{s}\|^2+\|\mathbf{s}^H A_\ell^H \mathbf{w_\ell}\|^2 + \mathbf{s}^H D_\ell \mathbf{s}(\mathbf{s}^H A_\ell^H \mathbf{w_\ell})^H + \mathbf{s}^H A_\ell^H \mathbf{w_\ell}(\mathbf{s}^H D_\ell \mathbf{s})^H = 
+\nonumber \\ 
+&=& \|\mathbf{s}^H D_\ell \mathbf{s}\|^2+\|\mathbf{s}^H A_\ell^H \mathbf{w_\ell}\|^2 + \mathbf{s}^H D_\ell \mathbf{s}\mathbf{w_\ell}^H A_\ell \mathbf{s} + \mathbf{s}^H A_\ell ^H \mathbf{w_\ell}\mathbf{s}^H D_\ell^H \mathbf{s} \nonumber
+\end{eqnarray}
+
+Because $\mathbf{w_\ell}$ is stochastic, $L_2$ is also a stochastic variable and we can look at its
+stochastic properties such as expectation and variance.
+
+\begin{eqnarray}
+\|\mathbf{s}^H A_\ell^H \mathbf{w_\ell}\|^2 = \\
+&=& \| \sum_{m=1}^N{s[m]^H a_\ell^H[m] w_\ell[m]}\|^2 = \nonumber \\
+&=&\sum_{m=1}^N\sum_{n=1}^N s[m]^H s[n] a_\ell^H[m] a_\ell[n] w_\ell[m] w_\ell^H[n] \nonumber
+\end{eqnarray}
+
+Where we denoted $a_\ell[n]$ as the $n$-th element on the diagonal of $A_\ell$ and used the diagonal property of $A_\ell$.\\
+
+Taking the expectation of the above expression we get:
+\begin{eqnarray}
+\label{eq:three_ten}
+E\{\|\mathbf{s}^H A_\ell^H \mathbf{w_\ell}\|^2\}= \\
+&=& E\left\{\sum_{m=1}^N\sum_{n=1}^N s[m]^H s[n] a_\ell^H[m] a_\ell[n] w_\ell[m] w_\ell^H[n]\right\}= \nonumber \\
+&=& \sum_{m=1}^N \sigma_\ell^2 |a_\ell[m]|^2 |s[m]|^2 = \nonumber \\
+&=& \sigma_\ell^2 \|\mathbf{s}\|^2 \nonumber
+\end{eqnarray}
+
+By taking the expectation of (\ref{eq:three_eight}) and substituting the result from (\ref{eq:three_ten})):
+\begin{equation}
+E\{L_2^{(\ell)}\}=E\{\|(A_\ell\mathbf{s})^H\mathbf{r_\ell}\|^2\}= \|\mathbf{s}^H D_\ell \mathbf{s}\|^2 + \sigma_\ell^2\|\mathbf{s}\|^2
+\end{equation}
+Where we used the assumptions that $\mathbf{w_\ell}$ is a zero mean, i.i.d process with $\sigma_\ell^2$ variance.\\
+
+Thus:
+\begin{eqnarray}
+E\{L_2\} &=& E\{\sum_{\ell=1}^L L_2^{(\ell)}\} = \\
+&=&\sum_{\ell=1}^L E\{\|(A_\ell\mathbf{s})^H\mathbf{r_\ell}\|^2\}= \sum_{\ell=1}^L \|\mathbf{s}^H D_\ell \mathbf{s}\|^2 + \sum_{\ell=1}^L \sigma_\ell^2\|\mathbf{s}\|^2 \nonumber
+\end{eqnarray}
+
+From the above result we learn that adding noise affects the expectation of the cost function by adding a constant to the cost function, that does not depend on the geometry. Thus, the maximum of the expectation of the cost function is at the same position and velocity as the cost function without any noise.
+
+\begin{eqnarray}
+\label{eq:var_l_2_l_simplified}
+VAR\{L_2^{(\ell)}\} = \\
+&=&VAR\{ \mathbf{s}^H D_\ell \mathbf{s}\mathbf{w_\ell}^H A_\ell \mathbf{s} + \mathbf{s}^H A_\ell^H \mathbf{w_\ell}\mathbf{s}^H D_\ell^H \mathbf{s}\} = \nonumber\\
+&=&2E\{\| \mathbf{s}^H D_\ell \mathbf{s}\mathbf{w_\ell}^H A_\ell \mathbf{s} \|^2 \} + 2\Re \{E\{(\mathbf{s}^H D_\ell \mathbf{s}\mathbf{w_\ell}^H A_\ell \mathbf{s})^2 \}\} =  \nonumber \\
+&=&2\| \mathbf{s}^H D_\ell \mathbf{s}\|^2\sigma_\ell^2\|\mathbf{s}\|^2 +2 \Re \left\{(\mathbf{s}^H D_\ell \mathbf{s})^2 E\left\{(\mathbf{w_\ell}^H A_\ell \mathbf{s})^2\right\}\right\} \nonumber
+\end{eqnarray}
+
+If we notice that for an arbitary complex Gaussian variable $a+bj$:
+\begin{eqnarray*}
+E\{(a+jb)^2\} = \\
+&=& E\{a^2-b^2+2abj \}= E\{a^2\}-E\{b^2\} +2jE\{ab\}= \\
+&=& \sigma^2-\sigma^2+0 = 0
+\end{eqnarray*}
+Where we assumed that $VAR\{a\} = VAR \{b\} = \sigma^2$ and that $a$ and $b$ have zero mean and are uncorrelated.\\
+We can see that $E\left\{(\mathbf{w_\ell}^H A_\ell \mathbf{s})^2\right\}=0$  and (\ref{eq:var_l_2_l_simplified})
+becomes:
+\begin{equation}
+VAR\{L_2^{(\ell)}\} =2\| \mathbf{s}^H D_\ell \mathbf{s}\|^2\sigma_\ell^2\|\mathbf{s}\|^2 
+\end{equation}
+Thus:
+\begin{equation}
+VAR\{L_2\} = \sum_{l=1}^L 2\| \mathbf{s}^H D_\ell \mathbf{s}\|^2\sigma_\ell^2\|\mathbf{s}\|^2 
+\end{equation}
+Where we used the assumption that the noise in all of the receivers is independent. Therefore, the variance of the sum becomes the sum of variances.
+
+\section{Zero Noise Analysis - Full scenario}
+
+In the proceeding section we will not use the assumptions used above, in the simplified scenario sections.
+We will express $L_2$ using the complete signal model presented.
+
+Remembering that (from (\ref{eq:r_lWBDef})):
+ $$\mathbf{r_\ell}=b_\ell A_\ell F_\ell C \mathbf{s} + \mathbf{w_\ell}$$ 
+ 
+ We can write:
+\begin{equation}
+\mathbf{r_\ell}= b_\ell A_\ell^{(0)} F_\ell^{(0)} C^{(0)} \mathbf{s}
+\end{equation}
+Where we used the assumption that $\mathbf{w}_\ell=0$. 
+\\ \\
+$A^{(0)}_\ell$, $F_\ell^{(0)}$, $C^{(0)}$ represent the true Doppler frequency shift caused by the relative speed of the transmitter and the receivers, the true delay caused by the relative distance of the transmitter and the receivers and the true transmitter frequency instability respectively.
+
+Thus:
+
+\begin{equation}
+\label{eq:analysis1}
+(A_\ell F_\ell C \mathbf{s})^H\mathbf{r_\ell}=(A_\ell F_\ell C\mathbf{s})^H(b_\ell A_\ell^{(0)} F_\ell^{(0)} C^{(0)} \mathbf{s})
+\end{equation}
+
+Therefore:
+
+\begin{eqnarray}
+\label{eq:three_eighteen}
+\|(A_\ell\mathbf{s})^H\mathbf{r_\ell}\|^2 =\\
+&=&\|(A_\ell F_\ell C\mathbf{s})^H(b_\ell A_\ell^{(0)} F_\ell^{(0)} C^{(0)} \mathbf{s})\|^2= \nonumber \\
+&=&\|\mathbf{s}^H C^H F_\ell^H A_\ell^H b_\ell A_\ell^{(0)} F_\ell^{(0)} C^{(0)} \mathbf{s}\|^2 \nonumber
+\end{eqnarray}
+
+Defining:
+\begin{equation}
+D_\ell \triangleq  F_\ell^H  F_\ell^{(0)} A_\ell^H A^{(0)}_\ell C^H C^{(0)}
+\end{equation}
+
+Where $D_\ell$ is a frequency and time shift operator, shifting the signal frequency by $(f^{(0)}_\ell-f_\ell)+(\nu^{(0)}-\nu)$ and shifting the signal by $\lfloor ^{T_\ell^{(0)}}/_{T_s} \rfloor- \lfloor ^{T_\ell}/_{T_s} \rfloor$ indices. $f^{(0)}_\ell$ is the true Doppler shift of the signal received by the $\ell$-th receiver, $\nu^{(0)}$ is the true frequency instability of the transmitter and $T_\ell^{(0)}$ is the delay caused by the true distance between the transmitter and the $\ell$-the receiver.
+\\
+If we notice that if $A$ is a general frequency-shift matrix, $F$ is a general time shift
+operator and $\mathbf{s}$ is an arbitrary signal, then $\|\mathbf{s}^H AF \mathbf{s}\|^2=\|\mathbf{s}^H FA\mathbf{s}\|^2$,
+then we can write by commutating the operators in (\ref{eq:three_eighteen}):
+
+\begin{equation}
+\|(A_\ell\mathbf{s})^H\mathbf{r_\ell}\|^2 = \|b_\ell\|^2\|\mathbf{s}^H D_\ell \mathbf{s}\|^2
+\end{equation}
+
+We can see that the expression above is the correlation between the signal shifted by $\lfloor ^{T_\ell^{(0)}}/_{T_s} \rfloor- \lfloor ^{T_\ell}/_{T_s} \rfloor$ indices and by $(f^{(0)}_\ell-f_\ell)+(\nu^{(0)}-\nu)$ in frequency and the original signal.
+
+And eventually:
+\begin{equation}
+L_2 = \sum_{l=1}^L \|(A_\ell\mathbf{s})^H\mathbf{r_\ell}\|^2 = \sum_{l=1}^L \|\mathbf{s}^H D_\ell \mathbf{s}\|^2
+\end{equation}
+Which is the sum of squared absolute value of the correlation between the time and frequency shifted signal and the original signal.
+
+\section{Noisy Analysis - Full Scenario}
+In this subsection we will try to analyse the effect of the noise in the receiver on the
+cost function.
+\\
+If we consider the noise, (\ref{eq:analysis1}) becomes:
+\begin{equation}
+(A_\ell F_\ell C \mathbf{s})^H\mathbf{r_\ell}=(A_\ell F_\ell C\mathbf{s})^H(b_\ell A_\ell^{(0)} F_\ell^{(0)} C^{(0)} \mathbf{s}+\mathbf{w_l}) = b_\ell \mathbf{s}^H D_\ell \mathbf{s}+ \mathbf{s}^H C^H F_\ell^H A_\ell^H \mathbf{w_\ell}
+\end{equation}
+
+So:
+\begin{eqnarray}
+L_2^{(\ell)}= \\
+&=& \|(A_\ell F_\ell C \mathbf{s})^H\mathbf{r_\ell}\|^2 = \nonumber\\ 
+&=&|b_\ell|^2\|\mathbf{s}^H D_\ell \mathbf{s}\|^2+\|\mathbf{s}^H C^H F_\ell^H A_\ell^H \mathbf{w_\ell}\|^2 + \dots \nonumber \\
+\dots & +& b_\ell\mathbf{s}^H D_\ell \mathbf{s}(\mathbf{s}^H C^H F_\ell^H A_\ell^H \mathbf{w_\ell})^H + \mathbf{s}^H C^H F_\ell^H A_\ell^H \mathbf{w_\ell}(b_\ell \mathbf{s}^H D_\ell \mathbf{s})^H = 
+\nonumber
+\end{eqnarray}
+Because $\mathbf{w_\ell}$ is stochastic, $L_2$ is also a stochastic variable and we can look at its
+stochastic properties such as expectation and variance.\\
+
+Similarly to (\ref{eq:three_ten}) we can show that:
+
+\begin{equation}
+E\{\|\mathbf{s}^H C^H F_\ell^H A_\ell^H \mathbf{w_\ell}\|^2\}= 
+\sigma_\ell^2 \|\mathbf{s}\|^2 \nonumber
+\end{equation}
+
+Thus:
+\begin{equation}
+E\{L_2^{(\ell)}\}=E\{\|(A_\ell F_\ell C \mathbf{s})^H\mathbf{r_\ell}\|^2\}= |b_\ell|^2\|\mathbf{s}^H D_\ell \mathbf{s}\|^2 + \sigma_\ell^2\|\mathbf{s}\|^2
+\end{equation}
+Where we used the assumptions that $\mathbf{w_\ell}$ is a zero mean, i.i.d process with $\sigma_\ell^2$ variance.
+
+Also, similarly to the simplified scenario, we can show that:
+\begin{equation}
+VAR\{L_2\} = \sum_{l=1}^L 2|b_\ell|^2\| \mathbf{s}^H D_\ell \mathbf{s}\|^2\sigma_\ell^2\|\mathbf{s}\|^2
+\end{equation}
+
+
+\section{Expression For $\frac{\partial L_2}{\partial v_x}$ and $\frac{\partial L_2}{\partial v_y}$}
+\label{d_L2_dvx_d_vy}
+In the following section, we develop the derivatives of the known signals cost function $L_2$ by the components of the velocity $v_x$ and $v_y$. This derivation allows us to perform gradient-based search in the velocity subspace for finding the maximum of the cost function.\\
+
+Defining:
+\begin{equation}
+\label{eq:l2_l_def}
+L_2^{(\ell)} \triangleq \|\left(A_\ell F_\ell C \mathbf{s} \right)^H\mathbf{r_\ell}\|^2
+\end{equation}
+
+The cost function $L_2$ can be expressed as:
+\begin{equation}
+L_2 = \sum_{l=1}^L L_2^{(\ell)}
+\end{equation}
+
+For further simplicity along the derivation we define:
+\begin{equation}
+\label{eq:u_l_def}
+\mathbf{u_\ell} \triangleq F_\ell C \mathbf{s}
+\end{equation}
+
+By substituting (\ref{eq:u_l_def}) into (\ref{eq:l2_l_def}) we get:
+\begin{equation}
+L_2^{(\ell)} = \|( A_\ell \mathbf{u_\ell})^H\mathbf{r_\ell}\|^2
+\end{equation}
+
+Notice that for an arbitrary vector $\mathbf{x}$, if $y=\|\mathbf{x}\|^2=\mathbf{x}^H\mathbf{x}$ then
+$$ \frac{\partial y}{\partial z} = \frac{\partial \mathbf{x}}{\partial z}^H\mathbf{x}+ \mathbf{x}^H\frac{\partial \mathbf{x}}{\partial z}=2 \Re \left\{ \frac{\partial \mathbf{x}}{\partial z}^H\mathbf{x} \right\} $$
+
+Using the above statement for the derivative of $L_2^{(\ell)}$ by $v_x$:
+\begin{equation}
+\label{eq:three_thirty}
+\frac{\partial}{\partial v_x} L_2^{(\ell)}  = 2 \Re
+\left\{ 
+\left[\frac{\partial}{\partial v_x} (Al \mathbf{u_\ell})^H \mathbf{r_\ell}\right]^H(Al \mathbf{u_\ell})^H \mathbf{r_\ell}
+\right\}
+\end{equation}
+
+By using the chain rule, we can see that:
+\begin{equation}
+\label{eq:da_l_d_v_x}
+\frac{\partial}{\partial v_x}\left( (Al \mathbf{u_\ell})^H \mathbf{r_\ell}\right) = \frac{\partial}{\partial f_\ell}\left( (Al \mathbf{u_\ell})^H \mathbf{r_\ell}\right) \frac{\partial f_\ell}{\partial v_x}
+\end{equation}
+
+We notice that:
+\begin{eqnarray}
+\label{eq:three_thirtytwo}
+\frac{\partial}{\partial f_\ell}\left( (Al \mathbf{u_\ell})^H \mathbf{r_\ell}\right) = \\
+&=& \frac{\partial}{\partial f_\ell} \left(
+\sum_{n=0}^{N-1}e^{-2 \pi f_\ell T_s n}u_\ell^*[n]r_\ell[n]
+\right) = \nonumber\\
+&=& -2 \pi j T_s \sum_{n=0}^{N-1}ne^{-2 \pi f_\ell T_s n}u_\ell^*[n]r_\ell[n] = 
+\nonumber\\
+&=& -2 \pi j T_s \left( (\tilde{N} Al \mathbf{u_\ell})^H \mathbf{r_\ell}\right) \nonumber
+\end{eqnarray}
+
+Where we used the matrix $ \tilde{N}$ defined:
+\begin{equation}
+\tilde{N} \triangleq diag\{0,1,\dots ,N-1\}
+\end{equation}
+
+By substituting (\ref{eq:three_thirtytwo}) into (\ref{eq:da_l_d_v_x}), using the derivation of $\frac{\partial f_\ell}{\partial v_x}$ and looking at the hermitian conjugate we get:
+\begin{equation}
+\label{eq:three_thirtyfour}
+\left[\frac{\partial}{\partial v_x} (Al \mathbf{u_\ell})^H \mathbf{r_\ell}\right]^H = -2 \pi j T_s \frac{f_c}{c}cos\theta_\ell\mathbf{r_\ell}^H(\tilde{N} A_\ell \mathbf{u_\ell})
+\end{equation}
+
+Hence, by substituting the result in (\ref{eq:three_thirtyfour}) into (\ref{eq:three_thirty}) we get:
+\begin{equation}
+\label{eq:three_thirtyfive}
+\frac{\partial L_2}{\partial v_x} = \sum_{l=1}^L (4 \pi T_s\frac{f_c}{c} cos\theta_\ell) \Im
+\left\{
+(A_\ell \mathbf{u_\ell})^H \mathbf{r_\ell}\mathbf{r_\ell}^H (\tilde{N}A_\ell\mathbf{u_\ell})
+\right\}
+\end{equation}
+
+And after substituting $\mathbf{u_\ell}$:
+\begin{equation}
+\label{eq:d_l_2_d_v_x_final}
+\frac{\partial L_2}{\partial v_x} = \sum_{l=1}^L (4 \pi T_s\frac{f_c}{c} cos\theta_\ell) \Im
+\left\{
+(A_\ell F_\ell C \mathbf{s})^H \mathbf{r_\ell}\mathbf{r_\ell}^H (\tilde{N}A_\ell F_\ell C \mathbf{s})
+\right\}
+\end{equation}
+
+And similarly:
+\begin{equation}
+\label{eq:d_l_2_d_v_y_final}
+\frac{\partial L_2}{\partial v_y} = \sum_{l=1}^L (4 \pi T_s\frac{f_c}{c} sin\theta_\ell) \Im
+\left\{
+(A_\ell F_\ell C \mathbf{s})^H \mathbf{r_\ell}\mathbf{r_\ell}^H (\tilde{N}A_\ell F_\ell C \mathbf{s})
+\right\}
+\end{equation}
+
+To demonstrate that the expressions above give the exact location when there is no noise, we will try to show that the derivatives of $L_2$ by the velocity components zeros for the true position of the transmitter when there is no noise.\\
+For the demonstration, we take $F_\ell=I$, $C=I$ (narrow-band case, no transmitter frequency instability, for ease).
+
+The signal received at the $\ell$-th receiver is then: 
+\begin{equation}
+\mathbf{r_\ell} = A_\ell^{(0)} \mathbf{s}
+\end{equation}
+
+When evaluating $A_\ell$ at the true transmitter position we get: 
+\begin{equation}
+A_\ell = A_\ell^{(0)}
+\end{equation}
+
+Using the above definitions, we can easily see that:
+\begin{equation}
+(A_\ell F_\ell C \mathbf{s})^H \mathbf{r_\ell} = \mathbf{s}^H C^{(0)H} A_\ell^{(0)H} A_\ell^{(0)} C^{(0)} \mathbf{s} = 
+\|\mathbf{s}\|^2
+\end{equation}
+
+And that:
+\begin{equation}
+\mathbf{r_\ell}^H (\tilde{N}A_\ell F_\ell C \mathbf{s}) = 
+\mathbf{s}^H C^{(0)H} A_\ell^{(0)H} \tilde{N} A_\ell^{(0)} C^{(0)} \mathbf{s} = 
+\mathbf{s}^H  \tilde{N} \mathbf{s} = \sum_{n=1}^Nn\|s[n]\|^2
+\end{equation}
+
+We can clearly see that the above expressions are real. Therefore, Substituting in (\ref{eq:d_l_2_d_v_x_final}) and in (\ref{eq:d_l_2_d_v_y_final}) we can see that the true transmitter position $\vec{p_0},\vec{v_0}$ is an extremum point of the cost function:
+\begin{eqnarray}
+\frac{\partial L_2}{\partial v_x}|_{\vec{p_0},\vec{v_0}} = 0 \\
+\frac{\partial L_2}{\partial v_y}|_{\vec{p_0},\vec{v_0}}= 0 \nonumber
+\end{eqnarray}
+
+We can also easily show that the derivative of the cost function zeros when $F_\ell \neq I$ because the
+above expressions are also real.
+
+\section{Expression For $\frac{\partial L_2}{\partial x}$ and $\frac{\partial L_2}{\partial y}$ for Narrow-Band signals}
+\label{d_L2_dx_d_y_NB}
+In the following section, we develop the derivatives of the known signals cost function $L_2$ by the components of the position $x$ and $y$ for the narrow-band scenario. This derivation allows us to perform gradient-based search in the position subspace for finding the maximum of the cost function.\\
+We start by analysing the narrow-band scenario because the derivation and the received expressions are simpler for this scenario. In the next section we also develop these expressions for the general wide-band scenario.\\
+
+For narrow-band signals, we assume that $F_\ell = I$, thus similarly to (\ref{eq:da_l_d_v_x}), by using the chain rule, we get:
+\begin{equation}
+\frac{\partial}{\partial x}\left( (Al \mathbf{u_\ell})^H \mathbf{r_\ell}\right) = \frac{\partial}{\partial f_\ell}\left( (Al \mathbf{u_\ell})^H \mathbf{r_\ell}\right) \frac{\partial f_\ell}{\partial x}
+\end{equation}
+
+Using the result of (\ref{eq:three_thirtytwo}) and the expression for $\frac{\partial f_\ell}{\partial x}$ we get:
+
+\begin{equation}
+\frac{\partial}{\partial x}((A_\ell \mathbf{u_\ell})^H \mathbf{r_\ell}) = - 2 \pi j T_s ((\tilde{N} A_\ell \mathbf{u_\ell})^H\mathbf{r_\ell})\frac{f_c}{c}\frac{\|\vec{v}\|}{d_\ell} \sin \phi_\ell \sin \theta_\ell
+\end{equation}
+
+Therefore, similarly to (\ref{eq:three_thirtyfive}):
+
+\begin{equation}
+\frac{\partial L_2}{\partial x} = -\sum_{l=1}^L (4 \pi T_s \frac{f_c}{c}\frac{\|\vec{v}\|}{d_\ell}\sin \phi_\ell \sin \theta_\ell ) \Im
+\left\{
+(A_\ell C \mathbf{s_\ell})^H \mathbf{r_\ell}\mathbf{r_\ell}^H (\tilde{N}A_\ell C \mathbf{s_\ell})
+\right\}
+\end{equation}
+
+And similarly:
+\begin{equation}
+\frac{\partial L_2}{\partial y} = \sum_{l=1}^L (4 \pi T_s \frac{f_c}{c}\frac{\|\vec{v}\|}{d_\ell}\sin \phi_\ell \cos \theta_\ell ) \Im
+\left\{
+(A_\ell C \mathbf{s_\ell})^H \mathbf{r_\ell}\mathbf{r_\ell}^H (\tilde{N}A_\ell C \mathbf{s_\ell})
+\right\}
+\end{equation}
+To demonstrate that when there is no noise, there is an extremum point in the true position of the transmitter, we can see that the expression inside the $\Im\{\dots\}$ operator is identical to the one in the expression for $\frac{\partial L_2}{\partial v_x}$. So, for the true position of the transmitter, the
+expression inside the $\Im\{\dots\}$ operator is real, and we get:
+\begin{eqnarray}
+\frac{\partial L_2}{\partial x}|_{\vec{p_0},\vec{v_0}} = 0 \\
+\frac{\partial L_2}{\partial y}|_{\vec{p_0},\vec{v_0}}= 0 \nonumber
+\end{eqnarray}
+
+\section{Expression For $\frac{\partial L_2}{\partial x}$ and $\frac{\partial L_2}{\partial y}$ for Wide-Band signals}
+\label{d_L2_dx_dy_WB}
+In the following section, we develop the derivatives of the known signals cost function $L_2$ by the components of the position $x$ and $y$ for the general wide-band scenario. This derivation allows us to perform gradient-based search in the position subspace for finding the maximum of the cost function.\\
+
+In order to derive an expression for $\frac{\partial L_2}{\partial x}$ and $\frac{\partial L_2}{\partial y}$ for wide-band signals, we can relate to $F_\ell$ as a continuous time-shift operator.\\
+
+We can write:
+\begin{equation}
+L_2^{(\ell)}=\|(A_\ell F_\ell C\mathbf{s})^H\mathbf{r_\ell}\|^2 = \|(A_\ell C F_\ell \mathbf{s})^H\mathbf{r_\ell}\|^2= \|(A_\ell C \mathbf{s_\ell})^H\mathbf{r_\ell}\|^2
+\end{equation}
+
+Where we denote:
+\begin{equation}
+\mathbf{s_\ell} \triangleq [s(t_1-T_\ell) \dots s(t_N-T_\ell)]^T                                                           
+\end{equation}
+
+By using the chain rule, we know that:
+\begin{equation}
+\label{eq:d_l_2_d_x}
+\frac{\partial L_2}{\partial x} = \sum_{l=1}^L \frac{\partial L_2^{(\ell)}}{\partial x}=\sum_{l=1}^L \frac{\partial L_2^{(\ell)}}{\partial T_\ell}\frac{\partial T_\ell}{\partial x}+\frac{\partial L_2^{(\ell)}}{\partial f_\ell}\frac{\partial f_\ell}{\partial x}
+\end{equation}
+
+Looking at:
+
+\begin{equation}
+\frac{\partial L_2^{(\ell)}}{\partial T_\ell} = \frac{\partial}{\partial T_\ell} \|(A_\ell C \mathbf{s_\ell})^H\mathbf{r_\ell}\|^2
+\end{equation}
+
+We notice that:
+\begin{equation}
+\frac{\partial}{\partial T_\ell} (Al C \mathbf{s_\ell})^H \mathbf{r_\ell} = - (Al C \mathbf{\dot{s_\ell}})^H \mathbf{r_\ell}
+\end{equation}
+
+Thus:
+\begin{eqnarray}
+\frac{\partial L_2^{(\ell)}}{\partial T_\ell} = \\
+&=& 2 \Re \{(- (Al C \mathbf{\dot{s_\ell}})^H \mathbf{r_\ell})^H (Al C \mathbf{s_\ell})^H \mathbf{r_\ell} \} \nonumber\\
+&=& -2 \Re \{(Al C \mathbf{s_\ell})^H \mathbf{r_\ell} \mathbf{r_\ell}^H (A_\ell C \mathbf{\dot{s_\ell}})\} \nonumber
+\end{eqnarray}
+
+Subtituting the expressions for $\frac{\partial L_2^{(\ell)}}{\partial T_\ell}$, $\frac{\partial L_2^{(\ell)}}{\partial f_\ell}$, $\frac{\partial T_\ell}{\partial x}$ and $\frac{\partial f_\ell}{\partial x}$ into (\ref{eq:d_l_2_d_x}) we get:
+\begin{eqnarray}
+\frac{\partial L_2}{\partial x} = \\
+&=& \sum_{l=1}^L -2 \Re \left\{ (A_\ell C \mathbf{s_\ell})^H \mathbf{r_\ell} \mathbf{r_\ell}^H (A_\ell C \mathbf{\dot{s_\ell}})\right\}\frac{1}{c}\cos\theta_\ell - \nonumber \\
+&-& 4\pi T_s \frac{F_c}{c} \frac{\|\vec{v}\|}{d_\ell} \sin \phi_\ell \sin \theta_\ell \Im \left\{ (A_\ell C  \mathbf{s_\ell})^H \mathbf{r_\ell} \mathbf{r_\ell}^H (\tilde{N} A_\ell C \mathbf{s_\ell})\right\} \nonumber
+\end{eqnarray}
+
+And similarly for $\frac{\partial L_2}{\partial y}$:
+\begin{eqnarray}
+\frac{\partial L_2}{\partial y} = \\
+&=& \sum_{l=1}^L -2 \Re \left\{ (A_\ell C \mathbf{s_\ell})^H \mathbf{r_\ell} \mathbf{r_\ell}^H (A_\ell C \mathbf{\dot{s_\ell}})\right\}\frac{1}{c}\sin\theta_\ell + \nonumber \\
+&+& 4\pi T_s \frac{F_c}{c} \frac{\|\vec{v}\|}{d_\ell} \sin \phi_\ell \cos \theta_\ell \Im \left\{ (A_\ell C  \mathbf{s_\ell})^H \mathbf{r_\ell} \mathbf{r_\ell}^H (\tilde{N} A_\ell C \mathbf{s_\ell})\right\} \nonumber
+\end{eqnarray}
+
+And now we can go ahead and use these expressions in order to preform a gradient-based search in the position subspace for the maximum of the cost-function.

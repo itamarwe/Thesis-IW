@@ -1,0 +1,199 @@
+%Dynamic Scenario Using Kalman-Filter Simulation
+clear all;
+close all;
+TRIALS = 200;
+STEPS = 20;
+deltaT = 1; %[Sec]
+sigma_ax = 1; %[m/s^2}
+sigma_ay = 1; %[m/s^2]
+
+C = 3e08; %Speed of Signal Propagation (Usually speed of light)[m/s]
+N = 512; %The number of samples
+L = 6; %Number of receivers
+Fs = 2^23; %Sampling Frequency [Hz]
+R = 1000;% [m] Receivers Distance From the axis center
+Fc = 1e9; % Carrier Frequency[Hz]
+B = 0.4*2^23; %The signal's bandwidth
+SNRdB = 10; %The signal's SNR in each receiver
+receiverGeometry = 1; %1-Circular Geometry 2- Linear Geometry
+method = 1; %1 - DPD Unknown signals
+
+%Intialize the positions of the transmitter
+x = zeros(4,STEPS);
+
+%Initial Position and Velocity
+x(:,1) = [100;200;300;200]; %[x,vx,y,vy]
+
+%*** Receivers Positions ***
+%1 -Circular array with radius R[m] 2- Linear With apparatus 2R[m]
+rReceiverMat = LocateReceivers(R,L,receiverGeometry);
+
+maxGridSampleDelay = ceil(2*R*(Fs/C));
+
+F = diag(ones(1,4));
+F(1,2) = deltaT;
+F(3,4) = deltaT;
+
+G = zeros(4,2);
+G(1,1) = deltaT^2/2;
+G(2,1) = deltaT;
+G(3,2) = deltaT^2/2;
+G(4,2) = deltaT;
+
+Rmat = diag([sigma_ax^2,sigma_ay^2]);
+
+Q = G*Rmat*G';
+
+%MeasurementNoise
+
+rTransmitter = [x(1,1) x(3,1)];
+v = [x(2,1) x(4,1)];
+
+%*** Create received signal for the CRB
+[originalSignal, cleanReceivedSignal, sNorm2, sDotNorm2 ,imCorrssDot,delayedSignal, delayedSignalDot,b] = ...
+    CreateRxSignal(rTransmitter, v, C, Fc, rReceiverMat,B,Fs, N+maxGridSampleDelay);
+
+
+%***Caluculate CRB - Pay attention the here the x vector is [x, vx, y,
+%vy] and not [x y vx vy] like in the crb function.
+
+%Cramer-Rao Lower Bound Calculation
+CRBMat = CRB2(Fc,C, delayedSignal, delayedSignalDot, N, Fs, b, rTransmitter,v, rReceiverMat,SNRdB);
+
+%Rz = 10*diag([1 1 1 1]);
+for ind1 = 1:4
+    i=ind1;
+    if (i==2) i=3;
+    elseif (i==3) i=2;
+    end
+    for ind2 = 1:4
+        j=ind2;
+        if (j==2) j=3;
+        elseif (j==3) j=2;
+        end
+        Rz(ind1,ind2)=CRBMat(i,j);
+    end
+end
+
+for trial = 1:TRIALS
+    %Initialize The Scenario
+
+
+    %Acceleraion Noise
+    a = [randn(1,STEPS)*sigma_ax;randn(1,STEPS)*sigma_ay];
+
+    for k=2:STEPS;
+        %Set the next Position and Velocity
+        x(:,k) = F*x(:,k-1)+G*a(:,k);
+    end
+
+
+    %Clean Received Signal
+    [originalSignal, cleanReceivedSignal, sNorm2, sDotNorm2 ,imCorrssDot,delayedSignal, delayedSignalDot,b] = ...
+        CreateRxSignal(rTransmitter, v, C, Fc, rReceiverMat,B,Fs, N+maxGridSampleDelay);
+
+    %Noisy Received Signal
+    receivedSignal = addNoise(cleanReceivedSignal,SNRdB,N);
+
+    %Grid Search Estimation
+    pScale =  20;
+    vScale = 400;
+    gridX = [linspace(-pScale/2, pScale/2,10)]+rTransmitter(1)+ (rand-.5)*10;
+    gridY = [linspace(-pScale/2, pScale/2,10)]+rTransmitter(2)+(rand-.5)*10;
+    gridVx = [linspace(-vScale/2, vScale/2,10)]+v(1)+(rand-.5)*10;
+    gridVy = [linspace(-vScale/2, vScale/2,10)]+v(2)+(rand-.5)*10;
+
+    while pScale > 0.01
+
+        [z1 z3 z2 z4] = GridSearch5(gridX, gridY, gridVx, gridVy, originalSignal, rReceiverMat, receivedSignal, Fc, C, Fs, N, method,DT,DF,CRB_toa, CRB_foa);
+        %                [EmitPosEst_DPD,Xest_DPD,Yest_DPD]  =
+        %                DPD_Known_Signals(time_vec,Xsearch_DPD,Ysearch_DPD,ReceiverPos,ReceiverVel,K,L,Q,fc,c,r_vec_t,CF1,sig);
+        pScale=pScale*.6;
+        vScale=vScale*.6;
+        gridX = [0 linspace(-pScale/2, pScale/2,3)] + z1;
+        gridY = [0 linspace(-pScale/2, pScale/2,3)] + z3;
+        gridVx = [0 linspace(-vScale/2, vScale/2,3)]+z2;
+        gridVy = [0 linspace(-vScale/2, vScale/2,3)]+z4;
+    end
+
+    %*** Replace with the grid search
+    %    z(:,1) = x(:,1)+10*randn(4,1);
+    z(:,1) = [z1 z2 z3 z4];
+
+
+    %Po
+    Phat = Rz;
+    xhat(:,1) = z(:,1);
+
+    for k=2:STEPS
+
+        rTransmitter = [x(1,k) x(3,k)];
+        v = [x(2,k) x(4,k)];
+        %Clean Received Signal
+        [originalSignal, cleanReceivedSignal, sNorm2, sDotNorm2 ,imCorrssDot,delayedSignal, delayedSignalDot,b] = ...
+            CreateRxSignal(rTransmitter, v, C, Fc, rReceiverMat,B,Fs, N+maxGridSampleDelay);
+
+        %Noisy Received Signal
+        receivedSignal = addNoise(cleanReceivedSignal,SNRdB,N);
+
+        %Grid Search Estimation
+        pScale =  20;
+        vScale = 400;
+        gridX = [linspace(-pScale/2, pScale/2,10)]+rTransmitter(1)+ (rand-.5)*10;
+        gridY = [linspace(-pScale/2, pScale/2,10)]+rTransmitter(2)+(rand-.5)*10;
+        gridVx = [linspace(-vScale/2, vScale/2,10)]+v(1)+(rand-.5)*10;
+        gridVy = [linspace(-vScale/2, vScale/2,10)]+v(2)+(rand-.5)*10;
+
+        while pScale > 0.01
+
+            [z1 z3 z2 z4] = GridSearch5(gridX, gridY, gridVx, gridVy, originalSignal, rReceiverMat, receivedSignal, Fc, C, Fs, N, method,DT,DF,CRB_toa, CRB_foa);
+            %                [EmitPosEst_DPD,Xest_DPD,Yest_DPD]  =
+            %                DPD_Known_Signals(time_vec,Xsearch_DPD,Ysearch_DPD,ReceiverPos,ReceiverVel,K,L,Q,fc,c,r_vec_t,CF1,sig);
+            pScale=pScale*.6;
+            vScale=vScale*.6;
+            gridX = [0 linspace(-pScale/2, pScale/2,3)] + z1;
+            gridY = [0 linspace(-pScale/2, pScale/2,3)] + z3;
+            gridVx = [0 linspace(-vScale/2, vScale/2,3)]+z2;
+            gridVy = [0 linspace(-vScale/2, vScale/2,3)]+z4;
+        end
+
+        %*** Replace with the grid search
+        %        z(:,k) = x(:,k)+10*randn(4,1);
+        z(:,k) = [z1 z2 z3 z4];
+
+        xhat(:,k) = F*xhat(:,k-1); %x_k|k-1
+        Phat = F*Phat*F'+Q; %P_k|k-1
+        K = Phat*inv(Phat+Rz);
+        xhat(:,k)  = xhat(:,k)+K*(z(:,k)-xhat(:,k));
+        Phat = (eye(4,4)-K)*Phat;
+    end
+
+    %  plot(x(1,:),x(3,:),'b-');
+    %  hold on;
+    %  plot(z(1,:),z(3,:),'r-');
+    %  plot(xhat(1,:),xhat(3,:),'g-');
+    %  hold off;
+
+    %The squared error in position estimation for every step
+    sqr_p_error(trial,:) = (xhat(1,:)-x(1,:)).^2+(xhat(3,:)-x(3,:)).^2;
+    sqr_v_error(trial,:) = (xhat(2,:)-x(2,:)).^2+(xhat(4,:)-x(4,:)).^2;
+end%trials
+
+plot(sqrt(mean(sqr_p_error)));
+
+%P0 = 0%CRB;
+
+
+
+
+
+
+
+
+%Get the Filtered Estimation
+
+%Save the noisy measurement
+
+%Draw a graph of estimation error Vs. Step
+
+

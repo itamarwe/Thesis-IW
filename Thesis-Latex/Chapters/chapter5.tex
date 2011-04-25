@@ -1,0 +1,385 @@
+% Chapter 1
+
+\chapter{CRAMER-RAO Lower Bound} % Write in your own chapter title
+\label{Chapter5}
+\lhead{Chapter 5. \emph{CRAMER-RAO Lower Bound}} % Write in your own chapter title to set the page header
+
+The Cramer-Rao Lower Bound (CRB) is a lower bound on the covariance of any unbiased estimator. The bound is given by the inverse of the Fisher Information Matrix (FIM).\\
+
+Because we are using a ML estimator in our work, the CRB also helps us in evaluating the performance of our estimator. It can be shown, that for small-errors(low noise scenarios) the ML estimator's performance is asymptotic to the CRB. Therefore, by evaluating the CRB of our scenario, we also evaluate the performance of our ML estimator.\\
+
+In this work, we derive the CRB for the known signals scenario in which we assume that the only unknown parameters are the position and the velocity of the transmitter. This bound still serve as a lower bound, but not necessarily as a tight lower bound for the unknown signals scenario.
+
+
+\section{General CRAMER-RAO Lower Bound Formulation}
+For complex Gaussian data vectors $\mathbf{r} \sim N(\mathbf{m},R)$ the elements of the Fischer Information Matrix are given by:
+
+\begin{equation}
+[J]_{ij}=tr\{ R^{-1}\frac{\partial R}{\partial \psi_{i}}R^{-1}\frac{\partial R}{\partial \psi_{j}}\}+2Re\{\frac{\partial \mathbf{m}^H}{\partial \psi_{i}}R^{-1}\frac{\partial \mathbf{m}}{\partial \psi_{j}}\}
+\end{equation}
+
+Where $\mathbf{\psi}$ is the unknown parameters vector and $R$ is the covariance matrix. in our case: 
+
+\begin{equation*}
+\mathbf{\psi} = \begin{pmatrix} x\\y\\v_x\\v_y\end{pmatrix}
+\end{equation*}
+\\
+\begin{equation*}
+R = diag \{\sigma_1^2 \cdot I,\dots,\sigma_L^2 \cdot I\}
+\end{equation*}
+\\
+
+If we consider the signals as non-random variables, the data covariance is equal to the noise covariance which is independent of the unknown parameters, under the assumption that the noise covariance is known. \\
+Thus, we get: 
+
+\begin{equation}
+[J]_{ij} =	2Re\{\frac{\partial \mathbf{m}^H}{\partial \psi_{i}}R^{-1}\frac{\partial \mathbf{m}}{\partial \psi_{j}}\}
+\end{equation}
+
+The data vector is given by:
+
+\begin{equation}
+\mathbf{m} \triangleq [\mathbf{m_1}^T,\dots ,\mathbf{m_\ell}^T]^T                                              
+\end{equation}
+
+where:
+
+\begin{equation}
+\mathbf{m_\ell}=b_\ell A_\ell F_\ell C \mathbf{s}=b_\ell A_\ell C F_\ell \mathbf{s} = b_\ell A_\ell C \mathbf{s_\ell}
+\end{equation}
+
+
+and:
+\begin{equation}
+\mathbf{s_\ell} \triangleq [s(t_1-T_\ell) \dots s(t_N-T_\ell)]^T                                                           
+\end{equation}
+
+Taking into account the structure of $R$ and $\mathbf{m_\ell}$ we get:
+\begin{equation}
+\frac{\partial \mathbf{m}^H}{\partial \psi_{i}}R^{-1}\frac{\partial \mathbf{m}}{\partial \psi_{j}} = 
+\sum_{l=1}^L\frac{1}{\sigma_\ell^2}\frac{\partial \mathbf{m_\ell}}{\partial \psi_i}^H\frac{\partial \mathbf{m_\ell}}{\partial \psi_j}
+\end{equation}
+
+We are interested in the derivatives of $\mathbf{m}$ with respect to the target coordinates and velocity. Using the chain rule we can write:
+\begin{equation}
+\frac{\partial \mathbf{m_\ell}}{\partial \psi_i}=\frac{\partial \mathbf{m_\ell}}{\partial f_\ell}\frac{\partial f_\ell}{\partial \psi_i}+\frac{\partial \mathbf{m_\ell}}{\partial T_\ell}  \frac{\partial T_\ell}{\partial \psi_i}                                                                  
+\end{equation}
+
+\subsection{$\frac{\partial \mathbf{m_\ell}}{\partial f_\ell}$ derivation:}
+\begin{equation}
+\frac{\partial \mathbf{m_\ell}}{\partial f_\ell}=\frac{\partial}{\partial f_\ell} b_\ell A_\ell C \mathbf{s_\ell} = b_\ell ( \frac{\partial}{\partial f_\ell} A_\ell ) C \mathbf{s_\ell}
+\end{equation}
+
+Note that:
+\begin{equation}
+\frac{\partial}{\partial f_\ell}A_\ell = 2 \pi j T_s \tilde{N} A_\ell
+\end{equation}
+
+Where:
+\begin{equation}
+\tilde{N} \triangleq diag\{0,1,2,\dots,N-1\}
+\end{equation}
+
+So that:
+\begin{equation}
+\frac{\partial \mathbf{m_\ell}}{\partial f_\ell}=2 \pi j T_s b_\ell \tilde{N} A_\ell C \mathbf{s_\ell}
+\end{equation}
+
+\subsection{$\frac{\partial \mathbf{m_\ell}}{\partial T_\ell}$ derivation:}
+\begin{equation}
+\frac{\partial \mathbf{m_\ell}}{\partial T_\ell} =\frac{\partial}{\partial T_\ell} b_\ell  A_\ell C \mathbf{s_\ell}=b_\ell  A_\ell C \frac{\partial}{\partial T_\ell}\mathbf{s_\ell}
+\end{equation}
+
+Where:
+
+\begin{equation}
+\frac{\partial}{\partial T_\ell} \mathbf{s_\ell} = \frac{\partial}{\partial T_\ell} [s(t_1-T_\ell) \dots s(t_N-T_\ell)]^T=-[\dot{s}(t_1-T_\ell )\dots \dot{s}(t_N-T_\ell)]^T = -\mathbf{\dot{s_\ell}}
+\end{equation}
+
+$\dot{s(t)}$ represents the temporal derivative of the signal envelope $\frac{\partial s(t)}{\partial t}$ and we defined:
+\begin{equation}
+\dot{s_\ell}[n] \triangleq \frac{\partial}{\partial t} s(t)|_{t=nTs-T_\ell}
+\end{equation}
+
+So that:
+\begin{equation}
+\frac{\partial \mathbf{m_\ell}}{\partial T_\ell} = -b_\ell A_\ell C \mathbf{\dot{s_\ell}}
+\end{equation}
+
+\subsection{$\frac{\partial f_\ell}{\partial x}$, $\frac{\partial f_\ell}{\partial y}$,
+$\frac{\partial f_\ell}{\partial v_x}$, $\frac{\partial f_\ell}{\partial v_y}$
+ derivation:}
+ Notice that:
+\begin{equation}
+\frac{\partial f_\ell}{\partial \psi_i} = \frac{\partial}{\partial \psi_i} f_c {\mu}_\ell (\vec{p},\vec{v})
+\end{equation}
+
+And that:
+
+\begin{equation} 
+(\frac{-c}{f_c})\frac{\partial}{\partial \psi_i} f_c \mu_\ell(\vec{p},\vec{v})=\frac{\partial}{\partial \psi_i}(\frac{\vec{v}(\vec{p}-\vec{p_\ell})}{\|\vec{p} -\vec{p_\ell}\|})                                                           
+\end{equation}
+
+
+\begin{equation}
+\frac{\partial}{\partial x} (\frac{\vec{v}(\vec{p}-\vec{p_\ell})}{\|\vec{p}-\vec{p_\ell}\|})=\frac{\partial}{\partial x}(\frac{v_x (x-x_\ell )+v_y (y-y_\ell )}{\sqrt{(x-x_\ell )^2+(y-y_\ell )^2}})=-\frac{\|\vec{v}\|}{d_\ell}  sin \phi_\ell sin\theta_\ell
+\end{equation}
+
+\begin{equation}
+\frac{\partial}{\partial y} (\frac{\vec{v}(\vec{p}-\vec{p_\ell})}{\|\vec{p}-\vec{p_\ell}\|})=\frac{\|\vec{v}\|}{d_\ell}  sin\phi_\ell cos\theta_\ell                                                           
+\end{equation}
+
+\begin{equation}
+\frac{\partial}{\partial v_x} (\frac{\vec{v}(\vec{p}-\vec{p_\ell})}{\|\vec{p}-\vec{p_\ell}\|})=\frac{\partial}{\partial v_x} \frac{v_x(x-x_\ell )+v_y(y-y_\ell)}{\sqrt{(x-x_\ell )^2+(y-y_\ell )^2}}=\frac{x-x_\ell}{\sqrt{(x-x_\ell )^2+(y-y_\ell )^2}}=cos\theta_\ell
+\end{equation}
+
+\begin{equation}
+\frac{\partial}{\partial v_y} \frac{\vec{v}(\vec{p}-\vec{p_\ell})}{\|\vec{p}-\vec{p_\ell}\|}=\frac{\partial}{\partial v_y}\frac{v_x (x-x_\ell )+v_y (y-y_\ell )}{\sqrt{(x-x_\ell )^2+(y-y_\ell )^2 )}}=\frac{y-y_\ell}{\sqrt{(x-x_\ell )^2+(y-y_\ell )^2}}=sin\theta_\ell
+\end{equation}
+
+Where $d_\ell$ denotes the distance between the emitter and the $\ell$-th receiver, $\phi_\ell$ is the angle between the emitter velocity and the line connecting the $\ell$-th receiver and the emitter. $\theta_\ell$ is the angle between the line connecting the $\ell$-th receiver and the emitter and the $x$-axis.
+
+\subsection{$\frac{\partial T_\ell}{\partial x}$, $\frac{\partial T_\ell}{\partial y}$,
+$\frac{\partial T_\ell}{\partial v_x}$, $\frac{\partial T_\ell}{\partial v_y}$
+ derivation:}
+ 
+Remember that:
+
+\begin{equation}
+T_\ell=\frac{1}{c} \|\vec{p}-\vec{p_\ell}\|
+\end{equation}
+
+\begin{equation}
+\frac{\partial}{\partial x} T_\ell=\frac{1}{c}  \frac{\partial}{\partial x} \sqrt{(x-x_\ell )^2+(y-y_\ell )^2}=\frac{1}{c}\frac{x-x_\ell }{\sqrt{(x-x_\ell  )^2+(y-y_\ell )^2}}=\frac{1}{c} cos\theta_\ell                                
+\end{equation}
+
+\begin{equation}
+\frac{\partial} {\partial y} T_\ell =\frac{1}{c}  \frac{\partial}{\partial y} \sqrt{(x-x_\ell  )^2+(y-y_\ell  )^2}=\frac{1}{c}\frac{y-y_\ell }{\sqrt{(x-x_\ell  )^2+(y-y_\ell  )^2}}=\frac{1}{c} sin\theta_\ell                                  
+\end{equation}
+
+Since $T_\ell $ is independent of $v_x$,$v_y$:
+\begin{equation}
+\frac{\partial}{\partial v_x}  T_\ell =\frac{\partial}{\partial v_y}  T_\ell =0
+\end{equation}
+
+For summary:
+\begin{equation}
+\frac{\partial f_\ell }{\partial x}=\frac{f_c}{c} \frac{\|\vec{v}\|}{d_\ell } sin\phi_\ell  sin\theta_\ell 
+\end{equation}
+\begin{equation}
+\frac{\partial f_\ell }{\partial y}=-\frac{f_c}{c}  \frac{\|\vec{v}\|}{d_\ell }  sin\phi_\ell  cos\theta_\ell 
+\end{equation}
+\begin{equation}
+\frac{\partial f_\ell }{\partial v_x}=-\frac{f_c}{c} cos\theta_\ell 
+\end{equation}
+\begin{equation}
+\frac{\partial f_\ell }{\partial v_y}=-\frac{f_c}{c} sin\theta_\ell 
+\end{equation}
+\begin{equation}
+\frac{\partial}{\partial x} T_\ell =\frac{1}{c} cos\theta_\ell 
+\end{equation}
+\begin{equation}
+\frac{\partial}{\partial y} T_\ell =\frac{1}{c} sin\theta_\ell 
+\end{equation}
+\begin{equation}
+\frac{\partial}{\partial v_x}  T_\ell =0
+\end{equation}
+\begin{equation}
+\frac{\partial}{\partial v_y}  T_\ell =0
+\end{equation}
+
+\subsection{$\frac{\partial \mathbf{m_\ell }}{\partial v_x}$,$\frac{\partial \mathbf{m_\ell }}{\partial v_y}$ derivation}
+
+Remembering that:
+$\frac{\partial \mathbf{m_\ell }}{\partial v_x} = \frac{\partial \mathbf{m_\ell }}{\partial f_\ell }\frac{\partial f_\ell }{\partial v_x} + \frac{\partial \mathbf{m_\ell }}{\partial T_\ell }\frac{\partial T_\ell }{\partial v_x}$
+we get:
+
+\begin{equation}
+\frac{\partial \mathbf{m_\ell }}{\partial v_x} = -(2 \pi j \frac{f_c}{c} cos\theta_\ell ) T_s b_\ell  \tilde{N} A_\ell  C \mathbf{s_\ell }
+\end{equation}
+
+And in the same manner, for $v_y$ we get:
+\begin{equation}
+\frac{\partial \mathbf{m_\ell }}{\partial v_y} = -(2 \pi j \frac{f_c}{c} sin\theta_\ell ) T_s b_\ell  \tilde{N} A_\ell  C \mathbf{s_\ell }
+\end{equation}
+
+\subsection{$\frac{\partial \mathbf{m_\ell }}{\partial x}$,$\frac{\partial \mathbf{m_\ell }}{\partial y}$ derivation}
+Remembering that 
+$\frac{\partial \mathbf{m_\ell }}{\partial x} = \frac{\partial \mathbf{m_\ell }}{\partial f_\ell }\frac{\partial f_\ell }{\partial x} + \frac{\partial \mathbf{m_\ell }}{\partial T_\ell }\frac{\partial T_\ell }{\partial x}$
+we get:
+
+\begin{equation}
+\frac{\partial \mathbf{m_\ell }}{\partial x} = (2 \pi j T_s \frac{f_c}{c} \frac{\|\vec{v}\|}{d_\ell } sin\phi_\ell  sin\theta_\ell )b_\ell  \tilde{N} A_\ell  C \mathbf{s_\ell } -\frac{1}{c}cos\theta_\ell  b_\ell  A_\ell  C \dot{\mathbf{s_\ell }}
+\end{equation}
+
+And in the same manner, for $y$ we get:
+\begin{equation}
+\frac{\partial \mathbf{m_\ell }}{\partial y} = -(2 \pi j T_s \frac{f_c}{c} \frac{\|\vec{v}\|}{d_\ell } sin\phi_\ell  cos\theta_\ell )b_\ell  \tilde{N} A_\ell  C \mathbf{s_\ell } -\frac{1}{c}sin\theta_\ell  b_\ell  A_\ell  C \dot{\mathbf{s_\ell }}
+\end{equation}
+
+
+\section{Expression for $[J]_{v_x v_x}$ and $[J]_{v_y v_y}$ }
+
+
+Substituting in the expression for $[J]_{v_x v_x}$ we get:
+\begin{equation}
+[J]_{v_x v_x} = 2\sum_{l=1}^{L}\frac{1}{\sigma_\ell ^2}\left\|\frac{\partial \mathbf{m_\ell }}{\partial v_x}\right\|^2
+\end{equation}
+Hence:
+\begin{eqnarray}
+\label{eq:j_v_x_v_x}
+[J]_{v_x v_x} = \\
+&=& 2\sum_{l=1}^{L}\frac{1}{\sigma_\ell ^2}(2 \pi T_s \frac{f_c}{c}cos\theta_\ell )^2 \|b_\ell \|^2 \mathbf{s_\ell }^H C^H A_\ell ^H \tilde{N}^H  \tilde{N} A_\ell  C \mathbf{s_\ell } = \nonumber \\
+&=& 2\sum_{l=1}^{L}\frac{1}{\sigma_\ell ^2}(2 \pi T_s \frac{f_c}{c}cos\theta_\ell )^2 \|b_\ell \|^2 \mathbf{s_\ell }^H \tilde{N}^H  \tilde{N} \mathbf{s_\ell } = \nonumber \\
+&=& 2\sum_{l=1}^{L}\frac{1}{\sigma_\ell ^2}(2 \pi T_s \frac{f_c}{c}cos\theta_\ell )^2 \|b_\ell \|^2  \|\tilde{N} \mathbf{s_\ell }\|^2 = \nonumber \\
+&=& 2\sum_{l=1}^{L}\frac{\|b_\ell \|^2 \|\mathbf{s_\ell }\|^2}{N \sigma_\ell ^2}N(2 \pi T_s \frac{f_c}{c}cos\theta_\ell )^2  \frac{\|\tilde{N} \mathbf{s_\ell }\|^2}{\|\mathbf{s_\ell }\|^2} \nonumber \\
+\end{eqnarray}
+
+If we denote $B$ as the signal's bandwidth, and assume that $B = \frac{F_s}{2}$.
+Thus, $T_s = \frac{1}{2B}$ and $N=\frac{T}{T_s}=2BT$.\\
+Substituting in (\ref{eq:j_v_x_v_x}) we get:
+\begin{eqnarray}
+[J]_{v_x v_x} = \\
+&=& 2\sum_{l=1}^{L}\frac{\|b_\ell \|^2 \|\mathbf{s_\ell }\|^2}{N \sigma_\ell ^2} 2BT(2 \pi \frac{1}{2B} \frac{f_c}{c}cos\theta_\ell )^2 \frac{\|\tilde{N} \mathbf{s_\ell }\|^2}{\|\mathbf{s_\ell }\|^2} = \nonumber \\
+&=&4 \left(\pi \frac{f_c}{c}\right)^2 \frac{T}{B}  \sum_{l=1}^{L}SNR_\ell  cos^2\theta_\ell  \frac{\|\tilde{N} \mathbf{s_\ell }\|^2}{\|\mathbf{s_\ell }\|^2}
+\end{eqnarray}
+
+And similarly:
+\begin{equation}
+[J]_{v_y v_y} =4 \left(\pi \frac{f_c}{c}\right)^2 \frac{T}{B}  \sum_{l=1}^{L}SNR_\ell  sin^2\theta_\ell  \frac{\|\tilde{N} \mathbf{s_\ell }\|^2}{\|\mathbf{s_\ell }\|^2}
+\end{equation}
+
+
+\section{Expression for $[J]_{x x}$ and $[J]_{y y}$ }
+Substituting in the expression for $[J]_{x x}$ we get:
+\begin{equation}
+[J]_{x x} = 2\sum_{l=1}^{L}\frac{1}{\sigma_\ell ^2}\left\|\frac{\partial \mathbf{m_\ell }}{\partial x} \right\|^2
+\end{equation}
+Hence:
+\begin{eqnarray}
+[J]_{x x} = \\
+&=& 2\sum_{l=1}^{L}\frac{1}{\sigma_\ell ^2} \left[\ \left(2 \pi T_s \frac{f_c}{c}\frac{\|\vec{v}\|}{d_\ell }sin\phi_\ell  sin\theta_\ell  \right)^2 \|b_\ell \|^2\|\tilde{N}\mathbf{s_\ell }\|^2+ \left( \frac{1}{c} cos\theta_\ell  \right)^2 \|b_\ell \|^2\|\mathbf{\dot{s_\ell }}\|^2 - (*) - (*)^H \right] \nonumber
+\end{eqnarray}
+
+Where:
+
+\begin{eqnarray}
+(*) = \\
+&=& \left[ \left( 2 \pi j T_s \frac{f_c}{c} \frac{\|\vec{v}\|}{d_\ell } sin\phi_\ell  sin\theta_\ell  \right) b_\ell  \tilde{N} A_\ell  C \mathbf{s_\ell } \right]^H 
+\left[ \frac{1}{c} cos \theta_\ell  b_\ell  A_\ell  C \mathbf{\dot{s_\ell }} \right] \nonumber \\
+&=& -2 \pi j T_s \frac{f_c}{c^2} \frac{\|\vec{v}\|}{d_\ell } sin\phi_\ell  sin \theta_\ell  cos\theta_\ell  \|b_\ell \|^2  \mathbf{s_\ell }^H \tilde{N} \mathbf{\dot{s_\ell }} \nonumber
+\end{eqnarray}
+
+And therefore:
+\begin{eqnarray}
+(*) + (*)^H = \\
+&=& -2 \pi T_s \frac{f_c}{c^2}\frac{\|\vec{v}\|}{d_\ell }sin\phi_\ell  sin\theta_\ell  cos \theta_\ell  \|b_\ell \|^2 (j \mathbf{s_\ell }^H\tilde{N}\mathbf{\dot{s_\ell }}-j \mathbf{\dot{s_\ell }}^H\tilde{N}^H\mathbf{s_\ell }) = \nonumber \\
+&=& 4 \pi T_s \frac{f_c}{c^2}\frac{\|\vec{v}\|}{d_\ell }sin\phi_\ell  sin\theta_\ell  cos \theta_\ell  \|b_\ell \|^2 IM\{\mathbf{s_\ell }^H\tilde{N}\mathbf{\dot{s_\ell }}\} \nonumber
+\end{eqnarray}
+
+
+Hence:
+\begin{eqnarray}
+[J]_{x x} = \\
+&= 2\sum_{l=1}^{L}\frac{1}{\sigma_\ell ^2} [\ \left(2 \pi T_s \frac{f_c}{c}\frac{\|\vec{v}\|}{d_\ell }sin\phi_\ell  sin\theta_\ell  \right)^2 \|b_\ell \|^2\|\tilde{N}\mathbf{s_\ell }\|^2+ \dots \nonumber \\
+&\dots+ \left( \frac{1}{c} cos\theta_\ell  \right)^2 \|b_\ell \|^2\|\mathbf{\dot{s_\ell }}\|^2 - \dots \nonumber \\
+&\dots - 4 \pi T_s \frac{f_c}{c^2}\frac{\|\vec{v}\|}{d_\ell }sin\phi_\ell  sin\theta_\ell  cos \theta_\ell  \|b_\ell \|^2 \Im\{\mathbf{s_\ell }^H\tilde{N}\mathbf{\dot{s_\ell }}\} ] \nonumber
+\end{eqnarray}
+
+And so:
+\begin{eqnarray}
+[J]_{x x} = \\
+&= 2\sum_{l=1}^{L}\frac{\|b_\ell \|^2\|\mathbf{s_\ell }\|^2}{N \sigma_\ell ^2} N [\ \left(2 \pi T_s \frac{f_c}{c}\frac{\|\vec{v}\|}{d_\ell }sin\phi_\ell  sin\theta_\ell  \right)^2 \frac{\|\tilde{N}\mathbf{s_\ell }\|^2}{\|\mathbf{s_\ell }\|^2}+ \dots \nonumber \\
+&\dots+ \left( \frac{1}{c} cos\theta_\ell  \right)^2 \frac{\|\mathbf{\dot{s_\ell }}\|^2}{\|\mathbf{s_\ell }\|^2} - \dots \nonumber \\
+&\dots - 4 \pi T_s \frac{f_c}{c^2}\frac{\|\vec{v}\|}{d_\ell }sin\phi_\ell  sin\theta_\ell  cos \theta_\ell  \frac{\Im\{\mathbf{s_\ell }^H\tilde{N}\mathbf{\dot{s_\ell }}\}}{\|\mathbf{s_\ell }\|^2} ] \nonumber
+\end{eqnarray}
+
+Thus:
+\begin{eqnarray}
+[J]_{x x} = \\
+&= 2\sum_{l=1}^{L}{SNR}_\ell 2BT [\ \left(2 \pi \frac{1}{2B} \frac{f_c}{c}\frac{\|\vec{v}\|}{d_\ell }sin\phi_\ell  sin\theta_\ell  \right)^2 \frac{\|\tilde{N}\mathbf{s_\ell }\|^2}{\|\mathbf{s_\ell }\|^2}+ \dots \nonumber \\
+&\dots+ \left( \frac{1}{c} cos\theta_\ell  \right)^2 \frac{\|\mathbf{\dot{s_\ell }}\|^2}{\|\mathbf{s_\ell }\|^2} - \dots \nonumber \\
+&\dots - 4 \pi \frac{1}{2B} \frac{f_c}{c^2}\frac{\|\vec{v}\|}{d_\ell }sin\phi_\ell  sin\theta_\ell  cos \theta_\ell  \frac{\Im\{\mathbf{s_\ell }^H\tilde{N}\mathbf{\dot{s_\ell }}\}}{\|\mathbf{s_\ell }\|^2} ] \nonumber
+\end{eqnarray}
+
+\begin{eqnarray}
+[J]_{x x} = \\
+&= 4\frac{T}{B} \sum_{l=1}^{L}{SNR}_\ell  [\ \left( \pi \frac{f_c}{c}\frac{\|\vec{v}\|}{d_\ell }sin\phi_\ell  sin\theta_\ell  \right)^2 \frac{\|\tilde{N}\mathbf{s_\ell }\|^2}{\|\mathbf{s_\ell }\|^2}+ \dots \nonumber \\
+&\dots+ B^2\left( \frac{1}{c} cos\theta_\ell  \right)^2 \frac{\|\mathbf{\dot{s_\ell }}\|^2}{\|\mathbf{s_\ell }\|^2} - \dots \nonumber \\
+&\dots - 2 \pi B \frac{f_c}{c^2}\frac{\|\vec{v}\|}{d_\ell }sin\phi_\ell  sin\theta_\ell  cos \theta_\ell  \frac{\Im\{\mathbf{s_\ell }^H\tilde{N}\mathbf{\dot{s_\ell }}\}}{\|\mathbf{s_\ell }\|^2} ] \nonumber
+\end{eqnarray}
+
+Similarly:
+\begin{eqnarray}
+[J]_{y y} = \\
+&= 4\frac{T}{B} \sum_{l=1}^{L}{SNR}_\ell  [\ \left( \pi \frac{f_c}{c}\frac{\|\vec{v}\|}{d_\ell }sin\phi_\ell  cos\theta_\ell  \right)^2 \frac{\|\tilde{N}\mathbf{s_\ell }\|^2}{\|\mathbf{s_\ell }\|^2}+ \dots \nonumber \\
+&\dots+ B^2\left( \frac{1}{c} sin\theta_\ell  \right)^2 \frac{\|\mathbf{\dot{s_\ell }}\|^2}{\|\mathbf{s_\ell }\|^2} + \dots \nonumber \\
+&\dots + 2 \pi B \frac{f_c}{c^2}\frac{\|\vec{v}\|}{d_\ell }sin\phi_\ell  sin\theta_\ell  cos \theta_\ell  \frac{\Im\{\mathbf{s_\ell }^H\tilde{N}\mathbf{\dot{s_\ell }}\}}{\|\mathbf{s_\ell }\|^2} ] \nonumber
+\end{eqnarray}
+
+\section{Expression for $[J]_{x v_x}$ ,$[J]_{y v_y}$,$[J]_{x v_y} $ and $[J]_{y v_x} $}
+\begin{eqnarray}
+\left(\frac{\partial \mathbf{m_\ell }}{\partial x} \right)^H \left(\frac{\partial \mathbf{m_\ell }}{\partial v_x} \right) = \\
+&=&\left[(2 \pi j T_s \frac{f_c}{c} \frac{\|\vec{v}\|}{d_\ell } sin\phi_\ell  sin\theta_\ell )b_\ell  \tilde{N} A_\ell  C \mathbf{s_\ell } -\frac{1}{c}cos\theta_\ell  b_\ell  A_\ell  C \dot{\mathbf{s_\ell }}\right]^H \cdot \nonumber \\
+&\cdot& \left[ -(2 \pi j \frac{f_c}{c} cos\theta_\ell ) T_s b_\ell  \tilde{N} A_\ell  C \mathbf{s_\ell } \right] = \nonumber \\
+&=& \|b_\ell \|^2\|s_\ell \|^2 [ -\left(2 \pi T_s \frac{f_c}{c}\right)^2\left(\frac{\|\vec{v}\|}{d_\ell } sin \phi_\ell  sin \theta_\ell  cos \theta_\ell \right)\frac{\|\tilde{N}\mathbf{s_\ell }\|^2}{\|\mathbf{s_\ell }\|2} +\dots \nonumber\\
+&&\dots +\left(\frac{1}{c}cos \theta_\ell \right)^2(2 \pi f_c T_s)j \frac{\mathbf{\dot{s_\ell }}^H\tilde{N}\mathbf{s_\ell }}{\|\mathbf{s_\ell }\|^2} ]
+ \nonumber
+\end{eqnarray}
+Hence:
+\begin{eqnarray}
+[J]_{x v_x} = \\
+&=& 2\sum_{l=1}^L\frac{\|b_\ell \|^2\|s_\ell \|^2}{N\sigma_\ell ^2}N[ -\left(2 \pi T_s \frac{f_c}{c}\right)^2\left(\frac{\|\vec{v}\|}{d_\ell } sin \phi_\ell  sin \theta_\ell  cos \theta_\ell \right)\frac{\|\tilde{N}\mathbf{s_\ell }\|^2}{\|\mathbf{s_\ell }\|2} -\dots \nonumber\\
+&&\dots -\left(\frac{1}{c}cos \theta_\ell \right)^2(2 \pi f_c T_s) \Im \left\{\frac{\mathbf{\dot{s_\ell }}^H\tilde{N}\mathbf{s_\ell }}{\|\mathbf{s_\ell }\|^2} \right\}]
+ \nonumber \\
+ &=& 4\frac{T}{B} \sum_{l=1}^L{SNR}_\ell  [ -\left( \pi \frac{f_c}{c}\right)^2\left(\frac{\|\vec{v}\|}{d_\ell } sin \phi_\ell  sin \theta_\ell  cos \theta_\ell \right)\frac{\|\tilde{N}\mathbf{s_\ell }\|^2}{\|\mathbf{s_\ell }\|2} -\dots \nonumber\\
+&&\dots -\left(\frac{1}{c}cos \theta_\ell \right)^2( \pi f_c B) \Im \left\{\frac{\mathbf{\dot{s_\ell }}^H\tilde{N}\mathbf{s_\ell }}{\|\mathbf{s_\ell }\|^2} \right\}]
+ \nonumber
+\end{eqnarray}
+
+And similarly:
+\begin{eqnarray}
+[J]_{y v_y} = \\
+&&4\frac{T}{B} \sum_{l=1}^L{SNR}_\ell  [ \left( \pi \frac{f_c}{c}\right)^2\left(\frac{\|\vec{v}\|}{d_\ell } sin \phi_\ell  sin \theta_\ell  cos \theta_\ell \right)\frac{\|\tilde{N}\mathbf{s_\ell }\|^2}{\|\mathbf{s_\ell }\|2} -\dots \nonumber\\
+&&\dots -\left(\frac{1}{c}sin \theta_\ell \right)^2( \pi f_c B) \Im \{\frac{\mathbf{\dot{s_\ell }}^H\tilde{N}\mathbf{s_\ell }}{\|\mathbf{s_\ell }\|^2}\} ]
+ \nonumber
+\end{eqnarray}
+
+\begin{eqnarray}
+[J]_{x v_y} = \\
+&=& 4\frac{T}{B} \sum_{l=1}^L{SNR}_\ell  [ -\left( \pi \frac{f_c}{c}\right)^2\left(\frac{\|\vec{v}\|}{d_\ell } sin \phi_\ell  sin^2 \theta_\ell \right)\frac{\|\tilde{N}\mathbf{s_\ell }\|^2}{\|\mathbf{s_\ell }\|2} -\dots \nonumber\\
+&&\dots -\left(\frac{1}{c}\right)^2 sin \theta_\ell  cos \theta_\ell ( \pi f_c B) \Im \{ \frac{\mathbf{\dot{s_\ell }}^H\tilde{N}\mathbf{s_\ell }}{\|\mathbf{s_\ell }\|^2} \}]
+ \nonumber
+\end{eqnarray}
+\begin{eqnarray}
+[J]_{y v_x} = \\
+&=& 4\frac{T}{B} \sum_{l=1}^L{SNR}_\ell  [ \left( \pi \frac{f_c}{c}\right)^2\left(\frac{\|\vec{v}\|}{d_\ell } sin \phi_\ell  cos^2 \theta_\ell \right)\frac{\|\tilde{N}\mathbf{s_\ell }\|^2}{\|\mathbf{s_\ell }\|2} -\dots \nonumber\\
+&&\dots -\left(\frac{1}{c}\right)^2 sin \theta_\ell  cos \theta_\ell ( \pi f_c B) \Im \{ \frac{\mathbf{\dot{s_\ell }}^H\tilde{N}\mathbf{s_\ell }}{\|\mathbf{s_\ell }\|^2}\} ]
+ \nonumber
+\end{eqnarray}
+
+\section{Expression for $[J]_{x y}$ and $[J]_{v_x v_y}$ }
+Similarly to the previous sections:
+\begin{eqnarray}
+\left(\frac{\partial \mathbf{m_\ell }}{\partial x}\right)^H\left(\frac{\partial \mathbf{m_\ell }}{\partial y}\right) &=& \\
+&=& -(2 \pi T_s \frac{f_c}{c}\frac{\|\vec{v}\|}{d_\ell }sin\phi_\ell )^2 sin\theta_\ell  cos\theta_\ell  |b_\ell |^2\|\tilde{N}\mathbf{s_\ell }\|^2 + \dots \nonumber\\
+&&\dots + \frac{1}{c^2}sin \theta_\ell  cos\theta_\ell  |b_\ell |^2\|\mathbf{\dot{s_\ell }}\|^2 +\dots \nonumber \\
+&&\dots + (2 \pi T_s \frac{f_c}{c^2} \frac{\|\vec{v}\|}{d_\ell }sin\phi_\ell )(j+2sin^2\theta_\ell \Im\{\mathbf{\dot{s_\ell }}^H\tilde{N}\mathbf{s_\ell }\})\nonumber
+\end{eqnarray}
+Thus:
+\begin{eqnarray}
+[J]_{xy} &=& \\
+&=& 2 \sum_{l=1}^L \frac{|b_\ell |^2\|\mathbf{s_\ell }\|^2}{N\sigma_\ell ^2}N[-(2 \pi T_s \frac{f_c}{c}\frac{\|\vec{v}\|}{d_\ell }sin\phi_\ell )^2 sin\theta_\ell  cos\theta_\ell  |b_\ell |^2\|\tilde{N}\mathbf{s_\ell }\|^2 + \dots \nonumber\\
+&&\dots + \frac{1}{c^2}sin \theta_\ell  cos\theta_\ell  |b_\ell |^2\|\mathbf{\dot{s_\ell }}\|^2 +\dots \nonumber \\
+&&\dots + 4 \pi T_s \frac{f_c}{c^2} \frac{\|\vec{v}\|}{d_\ell }sin\phi_\ell  sin^2\theta_\ell \Im\{\mathbf{\dot{s_\ell }}^H\tilde{N}\mathbf{s_\ell }\}]\nonumber
+\end{eqnarray}
+
+And:
+\begin{equation}
+\left(\frac{\partial \mathbf{m_\ell }}{\partial v_x}\right)^H\left(\frac{\partial \mathbf{m_\ell }}{\partial v_y}\right) =
+ - (2 \pi \frac{f_c}{c} T_s)^2 sin\theta_\ell  cos \theta_\ell  |b_\ell |^2 \|\tilde{N}\mathbf{s_\ell }\|^2 
+ \end{equation}
+Thus:
+\begin{equation}
+[J]_{v_xv_y} = -4\frac{T}{B} ( \pi \frac{f_c}{c})^2\sum_{l=1}^L {SNR}_\ell   sin\theta_\ell  cos \theta_\ell   \frac{\|\tilde{N}\mathbf{s_\ell }\|^2}{\|\mathbf{s_\ell }\|^2}
+\end{equation}
