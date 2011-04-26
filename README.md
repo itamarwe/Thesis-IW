@@ -19,3 +19,10 @@ the Cramer-Rao lower Bound (CRB) of the problem and compare numerically the perf
 of the suggested algorithms to the CRLB and to the performance of the classical
 two-step methods. We show that the suggested algorithm achieves better performance
 than classical methods, especially in low Signal to Noise Ratio (SNR) scenarios
+
+Folders:
+=====
+**Simulations ** - Matlab files of the simulation
+**Thesis-Latex** - The Latex files of the thesis
+**Referrences** - Referrences used in the thesis
+ 
