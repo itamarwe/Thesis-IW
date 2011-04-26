@@ -23,6 +23,6 @@ than classical methods, especially in low Signal to Noise Ratio (SNR) scenarios
 Folders:
 =====
 * **Simulations**  - Matlab files of the simulation  
-* **Thesis-Latex  - The Latex files of the thesis  
-* **Referrences  - Referrences used in the thesis  
+* **Thesis-Latex**  - The Latex files of the thesis  
+* **Referrences**  - Referrences used in the thesis  
  
