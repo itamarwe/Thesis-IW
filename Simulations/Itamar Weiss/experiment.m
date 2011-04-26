@@ -291,6 +291,9 @@ for snr_ind = 1:length(SNRdB)
     figure
     surf(Vxsearch, Vysearch,CF_conv), shading interp
     title('Conventional Velocity CF')
+    xlabel('[m/s]');
+    ylabel('[m/s]')
+    
     figure
     contour(Vxsearch, Vysearch, CF_conv),
     title('Conventional Velocity CF')
