@@ -1,7 +1,9 @@
 clear all;
 close all;
 
+
 % ******Initialize the scenario
+disp('Initializing the scenario');
 
 C = 3e08; %Speed of Signal Propagation (Usually speed of light)[m/s]
 Ns = 512; %Number of samples
@@ -10,7 +12,7 @@ Ts = 1/Fs;
 T0=Ns/Fs; % observation time
 L = 6; %Number of receivers
 R = 1000;% [m] Receivers Distance From the axis center
-
+W = 30; % [samples] Signal width
 
 time_vec = (0:Ns-1)*Ts; %Time Vector
 freq_vec = (0:Ns-1)*(Fs/Ns);
@@ -24,9 +26,6 @@ receiverGeometry = 1; %1 - Circular 2- Linear
 
 SNRdB = 100;
 
-PSCALE = 1000;
-PRESOLUTION = 1;
-VSCALE = 1000;
 
 %Receivers Positions
 rReceiverMat = LocateReceivers(R,L,receiverGeometry);
@@ -35,25 +34,25 @@ rReceiverMat = LocateReceivers(R,L,receiverGeometry);
 figure
 plot(rReceiverMat(:,1),rReceiverMat(:,2),'k*',...
     rTransmitter(1),rTransmitter(2),'kp') ; grid on
-xlabel('Meters');
-ylabel('Meters')
+xlabel('[m]');
+ylabel('[m]')
 axis equal
 legend('Receivers','Transmitter');
 title 'Scenario Geometry';
 drawnow
 
 % ******Create Shifted Signal
-
+disp('Creating the original signal');
 %Create Original Signal
 NOF = 201; %Number of Frequencies
 if NOF>1
     f0 = (1:NOF)./T0;
-    f1 = f0(f0<0.4*Fs);
+    f1 = f0(f0<B);
 else
     f1 = 1/T0;
 end
 
-amplitudes = sin(30*pi*f1/f1(end))./(30*pi*f1/f1(end));
+amplitudes = sin(W*pi*f1/f1(end))./(W*pi*f1/f1(end));
 %amplitudes = randn(size(f1));
 int = amplitudes*cos( 2*pi*(f1')*(time_vec-T0/2)) ;
 
@@ -100,10 +99,11 @@ end;%ell
 %Add Noise
 sigma2Vec = 10.^(-SNRdB/10);% noise variance
 
+disp('Calculating the cost functions');
 r_vec_t = zeros(Ns,L);
 r_vec_t0 = zeros(Ns,L);
 for snr_ind = 1:length(SNRdB)
-   tic
+    tic
     %Add Noise to the signals
     sigma2  = sigma2Vec(snr_ind);
     sigma_sq = sigma2/Ns;
@@ -178,23 +178,38 @@ for snr_ind = 1:length(SNRdB)
     figure
     surf(Xsearch, Ysearch,CF), shading interp
     title('Unknown DPD CF')
+    xlabel('[m]');
+    ylabel('[m]')
+
     figure
     contour(Xsearch, Ysearch, CF),
     title('Unknown DPD CF')
+    xlabel('[m]');
+    ylabel('[m]')
 
     figure
     surf(Xsearch, Ysearch,CF_known), shading interp
     title('Known DPD CF')
+    xlabel('[m]');
+    ylabel('[m]')
+
     figure
     contour(Xsearch, Ysearch, CF_known),
     title('Known DPD CF')
+    xlabel('[m]');
+    ylabel('[m]')
 
     figure
     surf(Xsearch, Ysearch,CF_conv), shading interp
     title('Conventional CF')
+    xlabel('[m]');
+    ylabel('[m]')
+
     figure
     contour(Xsearch, Ysearch, CF_conv),
     title('Conventional CF')
+    xlabel('[m]');
+    ylabel('[m]')
 
     drawnow;
 
@@ -252,24 +267,38 @@ for snr_ind = 1:length(SNRdB)
     figure
     surf(Vxsearch, Vysearch,CF), shading interp
     title('Unknown  DPD Velocity CF')
+    xlabel('[m/s]');
+    ylabel('[m/s]')
+
     figure
     contour(Vxsearch, Vysearch, CF),
     title('Unknown DPD Velocity CF')
-
+    xlabel('[m/s]');
+    ylabel('[m/s]')
+    
     figure
     surf(Vxsearch, Vysearch,CF_known), shading interp
     title('Known DPD Velocity CF')
+    xlabel('[m/s]');
+    ylabel('[m/s]')
     figure
+    
     contour(Vxsearch, Vysearch, CF_known),
     title('Known DPD Velocity CF')
-
+    xlabel('[m/s]');
+    ylabel('[m/s]')
+    
     figure
     surf(Vxsearch, Vysearch,CF_conv), shading interp
     title('Conventional Velocity CF')
+    xlabel('[m/s]');
+    ylabel('[m/s]')
+    
     figure
     contour(Vxsearch, Vysearch, CF_conv),
     title('Conventional Velocity CF')
-
+    xlabel('[m/s]');
+    ylabel('[m/s]')
     drawnow
 
 end
@@ -281,11 +310,16 @@ drawnow;
 %******************************
 %**** Perform Grid Search *****
 %******************************
-SNRdB = -5:-5:-25;
-ESTIMATIONS = 50;
+SNRdB = 25:-10:-25;
+ESTIMATIONS = 10;
+PSCALE = 5000;
+PRESOLUTION = 0.1;
+VSCALE = 10000;
 
 
 sigma2Vec = 10.^(-SNRdB/10);% noise variance
+
+disp('Starting Grid Search');
 
 for snr_ind = 1:length(SNRdB)
     sigma2  = sigma2Vec(snr_ind);
@@ -323,7 +357,7 @@ for snr_ind = 1:length(SNRdB)
         gridVx = linspace(-vScale/2, vScale/2,10)+v(1)+(rand-.5)*vScale/5;
         gridVy = linspace(-vScale/2, vScale/2,10)+v(2)+(rand-.5)*vScale/5;
 
-        while pScale > 0.01
+        while pScale > PRESOLUTION
 
             maxCost = -inf;
 
@@ -375,7 +409,6 @@ for snr_ind = 1:length(SNRdB)
         end
         disp('Unknown DPD estimation:');
         disp(['X:' num2str(x) ' Y:' num2str(y) ' Vx:' num2str(vx) ' Vy:' num2str(vy)]);
-        disp(' ');
 
         estimationResultsUnknown(estimation,:) = [x y vx vy];
         estimationResultsUnknown(estimation,:) = estimationResultsUnknown(estimation,:)-[rTransmitter v];
@@ -388,7 +421,7 @@ for snr_ind = 1:length(SNRdB)
         gridVx = linspace(-vScale/2, vScale/2,10)+v(1)+(rand-.5)*vScale/5;
         gridVy = linspace(-vScale/2, vScale/2,10)+v(2)+(rand-.5)*vScale/5;
 
-        while pScale > 0.01
+        while pScale > PRESOLUTION
 
             maxCost = -inf;
 
@@ -439,7 +472,6 @@ for snr_ind = 1:length(SNRdB)
         end
         disp('Known DPD estimation:');
         disp(['X:' num2str(x) ' Y:' num2str(y) ' Vx:' num2str(vx) ' Vy:' num2str(vy)]);
-        disp(' ');
 
         estimationResultsKnown(estimation,:) = [x y vx vy];
         estimationResultsKnown(estimation,:) = estimationResultsKnown(estimation,:)-[rTransmitter v];
@@ -452,8 +484,7 @@ for snr_ind = 1:length(SNRdB)
         gridVx = linspace(-vScale/2, vScale/2,10)+v(1)+(rand-.5)*vScale/5;
         gridVy = linspace(-vScale/2, vScale/2,10)+v(2)+(rand-.5)*vScale/5;
 
-        while pScale > 0.01
-
+        while pScale > PRESOLUTION
             maxCost = -inf;
 
             for gX = gridX
@@ -513,11 +544,10 @@ for snr_ind = 1:length(SNRdB)
         end
         disp('Conventional estimation:');
         disp(['X:' num2str(x) ' Y:' num2str(y) ' Vx:' num2str(vx) ' Vy:' num2str(vy)]);
-        disp(' ');
 
         estimationResultsConv(estimation,:) = [x y vx vy];
         estimationResultsConv(estimation,:) = estimationResultsConv(estimation,:)-[rTransmitter v];
-   toc
+        toc
     end%estimation
     scenarioResultsUnknown(snr_ind,1:4) = sqrt(mean(estimationResultsUnknown.^2));
     scenarioResultsUnknown(snr_ind,5) = sqrt(scenarioResultsUnknown(snr_ind,1)^2+scenarioResultsUnknown(snr_ind,2)^2);
@@ -530,9 +560,9 @@ for snr_ind = 1:length(SNRdB)
     scenarioResultsConv(snr_ind,1:4) = sqrt(mean(estimationResultsConv.^2));
     scenarioResultsConv(snr_ind,5) = sqrt(scenarioResultsConv(snr_ind,1)^2+scenarioResultsConv(snr_ind,2)^2);
     scenarioResultsConv(snr_ind,6) = sqrt(scenarioResultsConv(snr_ind,3)^2+scenarioResultsConv(snr_ind,4)^2);
-    
-    save experiment scenarioResultsKnown scenarioResultsUnknown scenarioResultsConv;
 
+    save experiment scenarioResultsKnown scenarioResultsUnknown scenarioResultsConv SNRdB;
+    disp(' ');
 end%SNRdB
 
 semilogy(SNRdB,scenarioResultsUnknown(:,5),'b-s',SNRdB,scenarioResultsKnown(:,5),'r-o',SNRdB,scenarioResultsConv(:,5),'b-p');

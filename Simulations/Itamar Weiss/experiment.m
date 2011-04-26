@@ -1,16 +1,18 @@
 clear all;
 close all;
 
+
 % ******Initialize the scenario
+disp('Initializing the scenario');
 
 C = 3e08; %Speed of Signal Propagation (Usually speed of light)[m/s]
 Ns = 512; %Number of samples
 Fs = 2^23; %Sampling Frequency [Hz]
 Ts = 1/Fs;
 T0=Ns/Fs; % observation time
-L = 4; %Number of receivers
+L = 6; %Number of receivers
 R = 1000;% [m] Receivers Distance From the axis center
-
+W = 30; % [samples] Signal width
 
 time_vec = (0:Ns-1)*Ts; %Time Vector
 freq_vec = (0:Ns-1)*(Fs/Ns);
@@ -32,25 +34,25 @@ rReceiverMat = LocateReceivers(R,L,receiverGeometry);
 figure
 plot(rReceiverMat(:,1),rReceiverMat(:,2),'k*',...
     rTransmitter(1),rTransmitter(2),'kp') ; grid on
-xlabel('Meters');
-ylabel('Meters')
+xlabel('[m]');
+ylabel('[m]')
 axis equal
 legend('Receivers','Transmitter');
 title 'Scenario Geometry';
 drawnow
 
 % ******Create Shifted Signal
-
+disp('Creating the original signal');
 %Create Original Signal
 NOF = 201; %Number of Frequencies
 if NOF>1
     f0 = (1:NOF)./T0;
-    f1 = f0(f0<0.4*Fs);
+    f1 = f0(f0<B);
 else
     f1 = 1/T0;
 end
 
-amplitudes = sin(30*pi*f1/f1(end))./(30*pi*f1/f1(end));
+amplitudes = sin(W*pi*f1/f1(end))./(W*pi*f1/f1(end));
 %amplitudes = randn(size(f1));
 int = amplitudes*cos( 2*pi*(f1')*(time_vec-T0/2)) ;
 
@@ -97,6 +99,7 @@ end;%ell
 %Add Noise
 sigma2Vec = 10.^(-SNRdB/10);% noise variance
 
+disp('Calculating the cost functions');
 r_vec_t = zeros(Ns,L);
 r_vec_t0 = zeros(Ns,L);
 for snr_ind = 1:length(SNRdB)
@@ -175,23 +178,38 @@ for snr_ind = 1:length(SNRdB)
     figure
     surf(Xsearch, Ysearch,CF), shading interp
     title('Unknown DPD CF')
+    xlabel('[m]');
+    ylabel('[m]')
+
     figure
     contour(Xsearch, Ysearch, CF),
     title('Unknown DPD CF')
+    xlabel('[m]');
+    ylabel('[m]')
 
     figure
     surf(Xsearch, Ysearch,CF_known), shading interp
     title('Known DPD CF')
+    xlabel('[m]');
+    ylabel('[m]')
+
     figure
     contour(Xsearch, Ysearch, CF_known),
     title('Known DPD CF')
+    xlabel('[m]');
+    ylabel('[m]')
 
     figure
     surf(Xsearch, Ysearch,CF_conv), shading interp
     title('Conventional CF')
+    xlabel('[m]');
+    ylabel('[m]')
+
     figure
     contour(Xsearch, Ysearch, CF_conv),
     title('Conventional CF')
+    xlabel('[m]');
+    ylabel('[m]')
 
     drawnow;
 
@@ -249,24 +267,35 @@ for snr_ind = 1:length(SNRdB)
     figure
     surf(Vxsearch, Vysearch,CF), shading interp
     title('Unknown  DPD Velocity CF')
+    xlabel('[m/s]');
+    ylabel('[m/s]')
+
     figure
     contour(Vxsearch, Vysearch, CF),
     title('Unknown DPD Velocity CF')
-
+    xlabel('[m/s]');
+    ylabel('[m/s]')
+    
     figure
     surf(Vxsearch, Vysearch,CF_known), shading interp
     title('Known DPD Velocity CF')
+    xlabel('[m/s]');
+    ylabel('[m/s]')
     figure
+    
     contour(Vxsearch, Vysearch, CF_known),
     title('Known DPD Velocity CF')
-
+    xlabel('[m/s]');
+    ylabel('[m/s]')
+    
     figure
     surf(Vxsearch, Vysearch,CF_conv), shading interp
     title('Conventional Velocity CF')
     figure
     contour(Vxsearch, Vysearch, CF_conv),
     title('Conventional Velocity CF')
-
+    xlabel('[m/s]');
+    ylabel('[m/s]')
     drawnow
 
 end
@@ -286,6 +315,8 @@ VSCALE = 10000;
 
 
 sigma2Vec = 10.^(-SNRdB/10);% noise variance
+
+disp('Starting Grid Search');
 
 for snr_ind = 1:length(SNRdB)
     sigma2  = sigma2Vec(snr_ind);

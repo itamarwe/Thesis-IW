@@ -39,7 +39,7 @@ dvy = 1; %[m/s] the delta v_y for the derivative
 
 %Create the original and received signal
 [originalSignal, cleanReceivedSignal, sNorm2, sDotNorm2 ,imCorrssDot,delayedSignal, delayedSignalDot,b] = ...
-    CreateRxSignalRand(rTransmitter, v, C, Fc, rReceiverMat,B,Fs, N+maxGridSampleDelay);
+    CreateRxSignal(rTransmitter, v, C, Fc, rReceiverMat,B,Fs, N+maxGridSampleDelay);
 
 %d_m_l_d_x calculation
 
