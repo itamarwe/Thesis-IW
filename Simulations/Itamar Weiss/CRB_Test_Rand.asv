@@ -15,22 +15,22 @@ clear all;
 C = 3e08; %Speed of Signal Propagation (Usually speed of light)[m/s]
 N = 512; %Number of smaples
 L = 6; %Number of receivers
-Fs = 2^23; %Sampling Frequency [Hz]
+Fs = 2^18; %Sampling Frequency [Hz]
 R = 1000;% [m] Receivers Distance From the axis center
 
 
 %Transmitter Position, Velocity, Nominal Frequency, Bandwidth
-rTransmitter = [100,300]; %Transmitter position [x,y] [m]
+rTransmitter = [100,1000]; %Transmitter position [x,y] [m]
 v = [200,200];%Transmitter velocity [vx, vy] [m/s]
 Fc = 1e9; % Carrier Frequency[Hz]
 B = 0.4*Fs;%Bandwidth[Hz]
-
+W = 30; %pulse width [samples]
 SNRdB = 25:-5:-15; %The signal's SNR in all of the receivers
-receiverGeometry = 1; %1-circular with radius R 2- Linear with length 2R
+receiverGeometry = 2; %1-circular with radius R 2- Linear with length 2R
 
 rReceiverMat = LocateReceivers(R,L,receiverGeometry); %The locations of the receivers
 
-maxGridSampleDelay = ceil(2*R*(Fs/C)); %The maximum possible delay
+maxGridSampleDelay = ceil(4*R*(Fs/C)); %The maximum possible delay
 
 dx = 1; %[m] the deltaX for the derivative
 dy = 1;% [m] the delta y for the derivative
@@ -39,8 +39,9 @@ dvy = 1; %[m/s] the delta v_y for the derivative
 
 %Create the original and received signal
 [originalSignal, cleanReceivedSignal, sNorm2, sDotNorm2 ,imCorrssDot,delayedSignal, delayedSignalDot,b] = ...
-    CreateRxSignalRand(rTransmitter, v, C, Fc, rReceiverMat,B,Fs, N+maxGridSampleDelay);
+    CreateRxSignal(rTransmitter, v, C, Fc, rReceiverMat,B,Fs, N+maxGridSampleDelay);
 
+[sig,int, int0, int0_dot, Delayed_sig, Delayed_sig0] = CreateRxSignal(rTransmitter, v, C, Fc, rReceiverMat,B,Fs,Ns,W)
 %d_m_l_d_x calculation
 
 %m_l for x+dx
@@ -147,5 +148,8 @@ semilogy(SNRdB, sqrt(CRBVy),'m-');
 grid on;
 legend('CRB X RMS', 'CRB Y RMS', 'CRB Vx RMS', 'CRB Vy RMS');
 title 'CRB Vs. SNR';
+sqrt(CRBX(1))
+sqrt(CRBVx(1))
+
 %CRBMat2 = CRB2(Fc,C, delayedSignal, delayedSignalDot, N, Fs, b,
 %rTransmitter,v, rReceiverMat,SNRdB)

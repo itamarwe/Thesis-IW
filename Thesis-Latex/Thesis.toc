@@ -30,39 +30,40 @@
 \contentsline {section}{\numberline {3.5}Expression For $\frac {\partial L_2}{\partial v_x}$ and $\frac {\partial L_2}{\partial v_y}$}{35}{section.126}
 \contentsline {section}{\numberline {3.6}Expression For $\frac {\partial L_2}{\partial x}$ and $\frac {\partial L_2}{\partial y}$ for Narrow-Band signals}{38}{section.144}
 \contentsline {section}{\numberline {3.7}Expression For $\frac {\partial L_2}{\partial x}$ and $\frac {\partial L_2}{\partial y}$ for Wide-Band signals}{39}{section.150}
-\contentsline {chapter}{\numberline {4}Location Algorithms}{42}{chapter.159}
-\contentsline {section}{\numberline {4.1}General}{42}{section.160}
-\contentsline {section}{\numberline {4.2}Known Narrow Band Signals}{43}{section.161}
-\contentsline {subsection}{\numberline {4.2.1}Steepest Descent Method}{44}{subsection.162}
-\contentsline {subsection}{\numberline {4.2.2}Gauss-Newton Method}{44}{subsection.165}
-\contentsline {section}{\numberline {4.3}Known Wide Band Signals}{46}{section.171}
-\contentsline {subsection}{\numberline {4.3.1}Steepest Descent Method}{46}{subsection.172}
-\contentsline {subsection}{\numberline {4.3.2}Gauss-Newton Method}{46}{subsection.173}
-\contentsline {section}{\numberline {4.4}Unknown Signals}{47}{section.182}
-\contentsline {section}{\numberline {4.5}Applying the Extended Kalman Filter}{47}{section.183}
-\contentsline {chapter}{\numberline {5}CRAMER-RAO Lower Bound}{51}{chapter.196}
-\contentsline {section}{\numberline {5.1}General CRAMER-RAO Lower Bound Formulation}{51}{section.197}
-\contentsline {subsection}{\numberline {5.1.1}$\frac {\partial \mathbf {m_\ell }}{\partial f_\ell }$ derivation:}{53}{subsection.205}
-\contentsline {subsection}{\numberline {5.1.2}$\frac {\partial \mathbf {m_\ell }}{\partial T_\ell }$ derivation:}{53}{subsection.210}
-\contentsline {subsection}{\numberline {5.1.3}$\frac {\partial f_\ell }{\partial x}$, $\frac {\partial f_\ell }{\partial y}$, $\frac {\partial f_\ell }{\partial v_x}$, $\frac {\partial f_\ell }{\partial v_y}$ derivation:}{54}{subsection.215}
-\contentsline {subsection}{\numberline {5.1.4}$\frac {\partial T_\ell }{\partial x}$, $\frac {\partial T_\ell }{\partial y}$, $\frac {\partial T_\ell }{\partial v_x}$, $\frac {\partial T_\ell }{\partial v_y}$ derivation:}{55}{subsection.222}
-\contentsline {subsection}{\numberline {5.1.5}$\frac {\partial \mathbf {m_\ell }}{\partial v_x}$,$\frac {\partial \mathbf {m_\ell }}{\partial v_y}$ derivation}{56}{subsection.235}
-\contentsline {subsection}{\numberline {5.1.6}$\frac {\partial \mathbf {m_\ell }}{\partial x}$,$\frac {\partial \mathbf {m_\ell }}{\partial y}$ derivation}{56}{subsection.238}
-\contentsline {section}{\numberline {5.2}Expression for $[J]_{v_x v_x}$ and $[J]_{v_y v_y}$ }{57}{section.241}
-\contentsline {section}{\numberline {5.3}Expression for $[J]_{x x}$ and $[J]_{y y}$ }{58}{section.246}
-\contentsline {section}{\numberline {5.4}Expression for $[J]_{x v_x}$ ,$[J]_{y v_y}$,$[J]_{x v_y} $ and $[J]_{y v_x} $}{60}{section.256}
-\contentsline {section}{\numberline {5.5}Expression for $[J]_{x y}$ and $[J]_{v_x v_y}$ }{61}{section.262}
-\contentsline {chapter}{\numberline {6}Numerical Results}{63}{chapter.267}
-\contentsline {section}{\numberline {6.1}General}{63}{section.268}
-\contentsline {section}{\numberline {6.2}Performance vs. SNR - Circular Receivers Array, Pulse Signal}{64}{section.269}
-\contentsline {section}{\numberline {6.3}Performance vs. SNR - Circular Receivers Array, Random Signal}{67}{section.276}
-\contentsline {section}{\numberline {6.4}Performance vs. SNR - Linear Receivers Array, Pulse Signal}{72}{section.282}
-\contentsline {section}{\numberline {6.5}Experimental Study Of The Cost Function}{75}{section.287}
-\contentsline {subsection}{\numberline {6.5.1}General}{75}{subsection.288}
-\contentsline {subsection}{\numberline {6.5.2}Pulse Signals}{76}{subsection.289}
-\contentsline {subsection}{\numberline {6.5.3}Random Signals}{82}{subsection.300}
-\contentsline {section}{\numberline {6.6}Performance Vs. Transmitter Position}{90}{section.314}
-\contentsline {chapter}{\numberline {7}Summary and Future Work}{97}{chapter.324}
+\contentsline {section}{\numberline {3.8}Peak Size Approximation}{41}{section.159}
+\contentsline {chapter}{\numberline {4}Location Algorithms}{44}{chapter.165}
+\contentsline {section}{\numberline {4.1}General}{44}{section.166}
+\contentsline {section}{\numberline {4.2}Known Narrow Band Signals}{45}{section.167}
+\contentsline {subsection}{\numberline {4.2.1}Steepest Descent Method}{46}{subsection.168}
+\contentsline {subsection}{\numberline {4.2.2}Gauss-Newton Method}{46}{subsection.171}
+\contentsline {section}{\numberline {4.3}Known Wide Band Signals}{48}{section.177}
+\contentsline {subsection}{\numberline {4.3.1}Steepest Descent Method}{48}{subsection.178}
+\contentsline {subsection}{\numberline {4.3.2}Gauss-Newton Method}{48}{subsection.179}
+\contentsline {section}{\numberline {4.4}Unknown Signals}{49}{section.188}
+\contentsline {section}{\numberline {4.5}Applying the Extended Kalman Filter}{49}{section.189}
+\contentsline {chapter}{\numberline {5}CRAMER-RAO Lower Bound}{53}{chapter.202}
+\contentsline {section}{\numberline {5.1}General CRAMER-RAO Lower Bound Formulation}{53}{section.203}
+\contentsline {subsection}{\numberline {5.1.1}$\frac {\partial \mathbf {m_\ell }}{\partial f_\ell }$ derivation:}{55}{subsection.211}
+\contentsline {subsection}{\numberline {5.1.2}$\frac {\partial \mathbf {m_\ell }}{\partial T_\ell }$ derivation:}{55}{subsection.216}
+\contentsline {subsection}{\numberline {5.1.3}$\frac {\partial f_\ell }{\partial x}$, $\frac {\partial f_\ell }{\partial y}$, $\frac {\partial f_\ell }{\partial v_x}$, $\frac {\partial f_\ell }{\partial v_y}$ derivation:}{56}{subsection.221}
+\contentsline {subsection}{\numberline {5.1.4}$\frac {\partial T_\ell }{\partial x}$, $\frac {\partial T_\ell }{\partial y}$, $\frac {\partial T_\ell }{\partial v_x}$, $\frac {\partial T_\ell }{\partial v_y}$ derivation:}{57}{subsection.228}
+\contentsline {subsection}{\numberline {5.1.5}$\frac {\partial \mathbf {m_\ell }}{\partial v_x}$,$\frac {\partial \mathbf {m_\ell }}{\partial v_y}$ derivation}{58}{subsection.241}
+\contentsline {subsection}{\numberline {5.1.6}$\frac {\partial \mathbf {m_\ell }}{\partial x}$,$\frac {\partial \mathbf {m_\ell }}{\partial y}$ derivation}{58}{subsection.244}
+\contentsline {section}{\numberline {5.2}Expression for $[J]_{v_x v_x}$ and $[J]_{v_y v_y}$ }{59}{section.247}
+\contentsline {section}{\numberline {5.3}Expression for $[J]_{x x}$ and $[J]_{y y}$ }{60}{section.252}
+\contentsline {section}{\numberline {5.4}Expression for $[J]_{x v_x}$ ,$[J]_{y v_y}$,$[J]_{x v_y} $ and $[J]_{y v_x} $}{62}{section.262}
+\contentsline {section}{\numberline {5.5}Expression for $[J]_{x y}$ and $[J]_{v_x v_y}$ }{63}{section.268}
+\contentsline {chapter}{\numberline {6}Numerical Results}{65}{chapter.273}
+\contentsline {section}{\numberline {6.1}General}{65}{section.274}
+\contentsline {section}{\numberline {6.2}Performance vs. SNR - Circular Receivers Array, Pulse Signal}{66}{section.275}
+\contentsline {section}{\numberline {6.3}Performance vs. SNR - Circular Receivers Array, Random Signal}{69}{section.282}
+\contentsline {section}{\numberline {6.4}Performance vs. SNR - Linear Receivers Array, Pulse Signal}{74}{section.288}
+\contentsline {section}{\numberline {6.5}Experimental Study Of The Cost Function}{77}{section.293}
+\contentsline {subsection}{\numberline {6.5.1}General}{77}{subsection.294}
+\contentsline {subsection}{\numberline {6.5.2}Pulse Signals}{78}{subsection.295}
+\contentsline {subsection}{\numberline {6.5.3}Random Signals}{84}{subsection.306}
+\contentsline {section}{\numberline {6.6}Performance Vs. Transmitter Position}{92}{section.320}
+\contentsline {chapter}{\numberline {7}Summary and Future Work}{99}{chapter.330}
 \vspace {2em}
 \vspace {2em}
-\contentsline {chapter}{Bibliography}{99}{dummy.325}
+\contentsline {chapter}{Bibliography}{101}{dummy.331}
