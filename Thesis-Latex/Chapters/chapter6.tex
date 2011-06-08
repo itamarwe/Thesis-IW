@@ -25,10 +25,10 @@ The signal is sampled with a sampling frequency of $2^{23}$[hz]$ \simeq 8.4$ [MH
 The length of the sampling interval in each receiver is $512$ [samples]$ \simeq 60 $[$\mu$ Sec].
 The simulated transmitted signal is a band-limited pulse signal, so that only the main lobe of the spectrum of the signal is not filtered. Figure (\ref{fig:pulseSignalAmp}) shows the signal in the time-domain, while the power spectrum of the original transmitted signal is shown in figure (\ref{fig:pulseSignalFreq}).
 
-For every point on the graph, an average of $10$ estimations is taken.
+For every point on the graphs of the performance simulation , an average of $10$ estimations is taken.
 Since the discussed problem requires the estimation of both the position and velocity of the transmitter, two parameters are calculated and presented in two different graphs for each SNR: The RMS of the positioning error, and the RMS of the velocity estimation error.
 
-In this scenario, we compare the performance of the direct unknown signals method, the direct known signals method, and the conventional two-step method.
+In this scenario, we compare the performance of the direct unknown signals method, the direct known signals method, and the conventional two-step unknown signals method.
 For known signals we use the $L2$ cost function in order to estimate the position and velocity of the transmitter. For unknown signals we use the $L3$ cost function.
 
 For the evaluation of the performance of the conventional method, we use the two step method.
@@ -66,11 +66,11 @@ As can be seen in figure (\ref{fig:scenario1_pos_rms}) and figure (\ref{fig:scen
 
 Looking at figure (\ref{fig:scenario1_pos_rms}) we can see that in the examined SNRs, in the presented scenario, the known signals direct method achieves the position estimation CRLB for all of the examined SNR range.
 
-Both the conventional two-step method and the direct unknown signals method achieve the bound at high SNR, but it is obvious that at lower SNR, the direct method shows greater performance.
+Both the conventional two-step method and the direct unknown signals method achieve the bound at high SNR, but it is obvious that at lower SNR, the direct method shows better performance.
 
 It is interesting to mention that both the known signals method, and the unknown signals methods achieve the known signals CRLB at high SNR. We would expect that only the known signals methods would achieve the known signals CRLB while the unknown signals methods would achieve the unknown signals CRLB, which is outside the scope of this work. Apparently, in this scenario, the unknown signals and the known signals CRLB are close enough so we are not able to distinct their asymptotic performance.
 
-The superiority of the direct methods is less obvious in the results of the velocity estimation, as can be seen in figure (\ref{fig:scenario1_vel_rms}). Nevertheless, in spite of the noisy velocity estimations, it can be seen from figure (\ref{fig:scenario1_vel_rms}) that the direct methods show better performance than the conventional method, and that the known signals direct method shows greater performance than the unknown signals method in lower SNRs.
+The superiority of the direct methods is less obvious in the results of the velocity estimation, as can be seen in figure (\ref{fig:scenario1_vel_rms}). Nevertheless, in spite of the noisy velocity estimations, it can be seen from figure (\ref{fig:scenario1_vel_rms}) that the direct methods show better performance than the conventional method, and that the known signals direct method shows better performance than the unknown signals method in lower SNRs.
 
 It is interesting to notice that none of the velocity estimation methods reach the CRLB at any of the examined SNRs. A possible explanation is that the frequency shift caused by the Doppler effect in this scenario is extremely small compared to the sampling frequency divided by the number of samples, so that quantization errors in the simulation raise the effective noise level, and do not allow the performance achieve the CRLB.
 
@@ -105,7 +105,7 @@ Figure (\ref{fig:randSignalAmp}) shows random signal in the time domain. The pow
 For every point on the graph, an average of $10$ estimations is taken.
 Since the discussed problem requires the estimation of both the position and velocity of the transmitter, two parameters are calculated and presented in two different graphs for each SNR: The RMS of the positioning error, and the RMS of the velocity estimation error.
 
-In this scenario, we compare the performance of the direct unknown signals method and the conventional two-step method.
+In this scenario, we compare the performance of the direct unknown signals method and the conventional two-step unknown signals method.
 
 For the evaluation of the performance of the direct unknown signals method we use the $L3$ cost function.
 
@@ -136,7 +136,7 @@ As can be seen in figure (\ref{fig:scenario4_pos_rms}) and figure (\ref{fig:scen
 
 Looking at figure (\ref{fig:scenario4_pos_rms}) we can see that in the examined SNRs, in the presented scenario, the known signals direct method achieves the position estimation CRLB for almost all of the examined SNR range.
 
-Both the conventional two-step method and the direct unknown signals method achieve the bound at high SNR, but it is obvious that at lower SNR, the direct method shows greater performance.
+Both the conventional two-step method and the direct unknown signals method achieve the bound at high SNR, but it is obvious that at lower SNR, the direct method shows better performance.
 
 It is interesting to mention that both methods, which are both unknown signals methods, achieve the known signals CRLB at high SNR. We would expect that the unknown signals method would not achieve the known signals CRLB, whose derivation is outside the scope of this work. Apparently, in this scenario, the unknown signals and the known signals CRLB are close enough so we are not able to distinct between them.
 
@@ -195,13 +195,13 @@ The CRLB for known signals is presented on the graphs as well for reference.
 \subsection*{Results}
 As can be seen in figure (\ref{fig:scenario2_pos_rms}) and figure (\ref{fig:scenario2_vel_rms}) the direct one-step methods achieve better results than the conventional two-step method.
 
-On figure (\ref{fig:scenario2_pos_rms}) we can see that in the examined SNRs, in the presented scenario, the known signals direct one-step method achieves the position estimation CRLB for all of the examined SNR range.
+In figure (\ref{fig:scenario2_pos_rms}) we can see that in the examined SNRs, in the presented scenario, the known signals direct one-step method achieves the position estimation CRLB for all of the examined SNR range.
 
 Both the conventional two-step method and the direct unknown signals method do not achieve the known signals CRLB, but show a different kind of asymptotic behaviour. Because the derivation of the unknown signals CRLB is out of the scope of this work, we can only assume that both methods mentioned above achieve the unknown signals CRLB in high SNR. 
 
 Nevertheless, although both methods show similar asymptotic behaviour in high SNR, it is clear that the direct unknown signals achieves better performance than the conventional method in low SNR scenarios.
 
-The superiority of the suggested direct method is less obvious in the results of the velocity estimation, as can be seen on figure (\ref{fig:scenario2_vel_rms}). Nevertheless, in spite of the noisy velocity estimations, it can be seen from figure (\ref{fig:scenario2_vel_rms}) that the direct methods show better performance than the conventional method, and that the known signals direct method shows slightly better performance than the unknown signals method in lower SNRs.
+The superiority of the suggested direct method is less obvious in the results of the velocity estimation, as can be seen in figure (\ref{fig:scenario2_vel_rms}). Nevertheless, in spite of the noisy velocity estimations, it can be seen from figure (\ref{fig:scenario2_vel_rms}) that the direct methods show better performance than the conventional method, and that the known signals direct method shows slightly better performance than the unknown signals method in lower SNRs.
 
 It is interesting to notice that none of the velocity estimation methods achieve the CRLB at any of the examined SNRs. A possible explanation is that the frequency shift caused by the Doppler effect in this scenario is extremely small compared to the sampling frequency divided by the number of samples, so that quantization errors in the simulation raise the effective noise level, and do not allow the performance achieve the CRLB.
 
@@ -245,17 +245,17 @@ We start by examining the contour plots of the various cost functions for pulse 
 
 Figure (\ref{fig:unknownSignalsPulseCircular}) presents the contour plot of the unknown signals one-step cost function for a circular array of receivers, figure (\ref{fig:knownSignalsPulseCircular}) presents the contour plot of the known signals one-step cost function and figure (\ref{fig:conventionalPulseCircular}) presents the contour plot of the conventional two-step cost function.
 
-We notice that the one-step cost functions show mild apparent difference, as seen on figure (\ref{fig:unknownSignalsPulseCircular}) and (\ref{fig:unknownSignalsPulseCircular}). 
+We notice that the one-step cost functions show mild apparent difference, as seen in figure (\ref{fig:unknownSignalsPulseCircular}) and (\ref{fig:knownSignalsPulseCircular}). 
 We notice that for this scenario geometry, where the transmitter is located near the center of the circular array of receivers, the peak of the one-step cost functions is circular. 
 
 We notice that the width of the peak around the transmitter is rather small. In order to find the peak for performing the position estimation, a high resolution grid is required. 
 
 The cost function is clearly not convex outside of the area of the peak, so gradient based search methods can be used only for performing fine tuning once the peak was found, and cannot be used in order to find the peak.
 
-We notice that there is some ambiguity in the cost function of the one-step methods, and some secondary peaks could be seen around the main peak. Although the value of the cost function at the real position of the transmitter is higher than its value at the secondary peaks, these peaks might be prevent the algorithm from finding the real position of the transmitter, if the resolution of the grid search is not high enough.
+We notice that there is some ambiguity in the cost function of the one-step methods, and some secondary peaks could be seen around the main peak. Although the value of the cost function at the real position of the transmitter is higher than its value at the secondary peaks, these peaks might prevent the algorithm from finding the real position of the transmitter, if the resolution of the grid search is not high enough.
 
-As can be seen on figure (\ref{fig:conventionalPulseCircular}), the peak around the real position of the transmitter is rather wide, there are no apparent ambiguities, and the cost-function is convex for a wide area. 
-As can be seen further in a wider view of the conventional cost function on figure (\ref{fig:zoomoutConventionalPulseCircular}), the cost-function maintains its convexity for a much wider area than the one-step methods.
+As can be seen in figure (\ref{fig:conventionalPulseCircular}), the peak around the real position of the transmitter is rather wide, there are no apparent ambiguities, and the cost-function is convex for a wide area. 
+As can be seen further in a wider view of the conventional cost function in figure (\ref{fig:zoomoutConventionalPulseCircular}), the cost-function maintains its convexity for a much wider area than the one-step methods.
 Thus, using gradient based methods, and avoiding grid search is possible with the conventional cost function.
 
 \begin{figure}
@@ -295,18 +295,18 @@ Figure (\ref{fig:unknownSignalsPulseLinear}) presents the contour plot of the un
 
 We notice that contrary to the previous scenario, in this scenario there is a significant difference between all of the cost functions.
 
-On figure (\ref{fig:unknownSignalsPulseLinear}) we can see that in this scenario the peak of the cost function around the position of the transmitter is no longer circular, but rather elliptical.
+In figure (\ref{fig:unknownSignalsPulseLinear}) we can see that in this scenario the peak of the cost function around the position of the transmitter is no longer circular, but rather elliptical.
 
 The known signals cost function, on the other hand, keeps the same peak characteristics as in the circular array of receivers scenario, as can be seen in figure (\ref{fig:knownSignalsPulseLinear}).
 
-We notice that the in the cost function of both one-step methods, the width of the peak around the transmitter is rather small. In order to find the peak for performing the position estimation, a high resolution grid is required. 
+We notice that in the cost function of both one-step methods, the width of the peak around the transmitter is rather small. In order to find the peak for performing the position estimation, a high resolution grid is required. 
 
 The cost function of both one-step methods is clearly not convex outside of the area of the peak, so gradient based search methods can be used only for performing fine tuning once the peak was found, and cannot be used in order to find the peak.
 
-We notice that there is some ambiguity in the cost function of the one-step methods, and some secondary peaks could be seen around the main peak. Although the value of the cost function at the real position of the transmitter is higher than its value at the secondary peaks, these peaks might be prevent the algorithm from finding the real position of the transmitter, if the resolution of the grid search is not high enough.
+We notice that there is some ambiguity in the cost function of the one-step methods, and some secondary peaks could be seen around the main peak. Although the value of the cost function at the real position of the transmitter is higher than its value at the secondary peaks, these peaks might prevent the algorithm from finding the real position of the transmitter, if the resolution of the grid search is not high enough.
 
-As can be seen on figure (\ref{fig:conventionalPulseLinear}), the peak around the real position of the transmitter is rather wide, there are no apparent ambiguities, and the cost-function is convex for a wide area. 
-As can be seen further in a wider view of the conventional cost function on figure (\ref{fig:zoomoutConventionalPulseLinear}), the cost-function maintains its convexity for a much wider area than the one-step methods.
+As can be seen in figure (\ref{fig:conventionalPulseLinear}), the peak around the real position of the transmitter is rather wide, there are no apparent ambiguities, and the cost-function is convex for a wide area. 
+As can be seen further in a wider view of the conventional cost function in figure (\ref{fig:zoomoutConventionalPulseLinear}), the cost-function maintains its convexity for a much wider area than the one-step methods.
 Thus, using gradient based methods, and avoiding grid search is possible with the conventional cost function.
 
 \begin{figure}
@@ -342,14 +342,15 @@ Thus, using gradient based methods, and avoiding grid search is possible with th
 \end{figure}
 
 \subsection{Random Signals}
-We continue by examining the contour plots of the various cost functions for random signals. In this subsection, we use the same random signal described by figure (\ref{fig:randSignalAmp}) and figure (\ref{fig:randSignalFreq}), with the transmitter parameters described above.
+We continue by examining the contour plots of the various cost functions for random signals. Since the properties of the cost function strongly depend on the properties of the signal, it is interesting to examine the cost function of different signals.
+In this subsection, we use the same random signal described by figure (\ref{fig:randSignalAmp}) and figure (\ref{fig:randSignalFreq}), with the transmitter parameters described above.
 
 \subsubsection*{Circular Array of Receivers}
 Figure (\ref{fig:unknownSignalsRandCircular}) presents the contour plot of the unknown signals one-step cost function for a circular array of receivers, figure (\ref{fig:knownSignalsRandCircular}) presents the contour plot of the known signals one-step cost function and figure (\ref{fig:conventionalRandCircular}) presents the contour plot of the conventional two-step cost function.
 
 We notice that the one-step unknown signals cost function for the random signal has a smaller peak than for the pulse signal, and less ambiguity, as is demonstrated further by figure (\ref{fig:unknownSignalRandCircularZoomout}).
 
-For the one-step known signals cost function we see that there is a slightly larger peak than the unknown-signals cost function. Some significant ambiguity is also apparent, as can be further seen on figure (\ref{fig:knownSignalRandCircularZoomout}).
+For the one-step known signals cost function we see that there is a slightly larger peak than the unknown-signals cost function. Some significant ambiguity is also apparent, as can be further seen in figure (\ref{fig:knownSignalRandCircularZoomout}).
 
 We notice that for this scenario geometry, where the transmitter is located near the center of the circular array of receivers, the peak of the one-step cost functions is circular. 
 
@@ -357,9 +358,9 @@ We notice that the width of the peak around the transmitter is rather small. In 
 
 The cost function is clearly not convex outside of the area of the peak, so gradient based search methods can be used only for performing fine tuning once the peak was found, and cannot be used in order to find the peak.
 
-As can be seen on figure (\ref{fig:conventionalRandCircular}), the peak of the conventional two-step cost function around the real position of the transmitter is rather wide, there are no apparent ambiguities, and the cost-function is convex for a wide area. 
+As can be seen in figure (\ref{fig:conventionalRandCircular}), the peak of the conventional two-step cost function around the real position of the transmitter is rather wide, there are no apparent ambiguities, and the cost-function is convex for a wide area. 
 
-As can be seen further in a wider view of the conventional cost function on figure (\ref{fig:conventionalSignalRandCircularZoomout}), the cost-function maintains its convexity for a much wider area than the one-step methods.
+As can be seen further in a wider view of the conventional cost function in figure (\ref{fig:conventionalSignalRandCircularZoomout}), the cost-function maintains its convexity for a much wider area than the one-step methods.
 Thus, using gradient based methods, and avoiding grid search is possible with the conventional cost function.
 
 \begin{figure}
@@ -422,7 +423,7 @@ We notice that the width of the peak of the one-step methods around the transmit
 
 The cost function is clearly not convex outside of the area of the peak, so gradient based search methods can be used only for performing fine tuning once the peak was found, and cannot be used in order to find the peak.
 
-As can be seen on figure (\ref{fig:conventionalRandLinear}), the peak of the conventional two-step cost function around the real position of the transmitter is rather wide, there are no apparent ambiguities, and the cost-function is convex for a wide area. 
+As can be seen in figure (\ref{fig:conventionalRandLinear}), the peak of the conventional two-step cost function around the real position of the transmitter is rather wide, there are no apparent ambiguities, and the cost-function is convex for a wide area. 
 
 \begin{figure}
 \begin{center}
@@ -473,7 +474,7 @@ We explore the expected performance of the algorithm for different positions of 
 Designing an optimal receivers array strongly depends on the characteristics of the problem, on its constraints and on the definition of the goals of the system \cite{fowler_wu}. Possible constraints could be the number of available receivers and the area on which they can lye. Possible definitions of the goals of the system could be maximizing the performance for a single possible transmitter position, or maximizing the average performance over an area on which the transmitter lies. Since the problem of designing an optimal receivers array depends on describing a specific scenario, we will only describe a method that enables customizing the design for a specific scenario.
 
 In order to estimate the performance of the algorithm in this section, we only used the results of the CRB, 
-and did not use true simulation results of our suggested algorithm. The main reason for doing that is that in order to create a good quality contour plot of the expected performance, the performance has to be evaluated in many different positions. Performing Monte-Carlo simulations shows much greater computational complexity than calculating the CRB at a given position, and as we know from theory and as we presented in the previous simulations, the performance of our estimator is asymptotically efficient, so that calculating the CRB gives us a good estimate of the performance of our algorithm.
+and did not use true simulation results of our suggested algorithm. The main reason for doing that is that in order to create a good quality contour plot of the expected performance, the performance has to be evaluated in many different positions. Performing Monte-Carlo simulations shows much better computational complexity than calculating the CRB at a given position, and as we know from theory and as we presented in the previous simulations, the performance of our estimator is asymptotically efficient, so that calculating the CRB gives us a good estimate of the performance of our algorithm.
 
 For each receiver array geometry we created a two contour plots, one for the position estimation performance, and one for the velocity estimation performance. The height of every point on the plot represents the calculated CRB for a transmitter with the above parameters, transmitting from that point. In order to make the plots more informative, we present the calculated CRB on a logarithmic scale, where the height of every point is the $\text{log}_{10}$ of the CRB at that point. The contour lines are equally on a logarithmic scale.
 
