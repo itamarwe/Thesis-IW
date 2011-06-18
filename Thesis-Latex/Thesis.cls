@@ -149,12 +149,12 @@
 \examiner    {}
 \degree      {}
 \authors     {}
-\university  {\texorpdfstring{\href{University Web Site URL Here (include http://)}
-                {University Name}}
-                {University Name}}
-\UNIVERSITY  {\texorpdfstring{\href{University Web Site URL Here (include http://)}
-                {UNIVERSITY NAME (IN BLOCK CAPITALS)}}
-                {UNIVERSITY NAME (IN BLOCK CAPITALS)}}
+\university  {\texorpdfstring{\href{http://www.tau.ac.il}
+                {Tel-Aviv University}}
+                {Tel-Aviv University}}
+\UNIVERSITY  {\texorpdfstring{\href{http://www.tau.ac.il}
+                {TEL-AVIV UNIVERSITY}}
+                {TEL-AVIV UNIVERSITY}}
 \department  {\texorpdfstring{\href{Department or School Web Site URL Here (include http://)}
                 {Department or School Name}}
                 {Department or School Name}}
@@ -201,7 +201,7 @@
       {\LARGE \authornames \par}
       \vfill
       {\large A thesis submitted in partial fulfillment for the \par}
-      {\large degree of Doctor of Philosophy \par}
+      {\large degree of Master of Science \par}
       \bigskip
       \bigskip
       {\large in the \par}
@@ -244,7 +244,7 @@
     {\normalsize \facname \par}
     {\normalsize \deptname \par}
     \bigskip
-    {\normalsize Doctor of Philosophy\par}
+    {\normalsize Master of Science\par}
     \bigskip
     {\normalsize\bf \@title \par}
     \medskip

@@ -7,44 +7,49 @@
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {2.1}{\ignorespaces Scenario Geometry}}{19}{figure.caption.54}
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Auto ambiguity function assumption for the peak size approximation}}{42}{figure.caption.160}
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Auto ambiguity function translation to position space}}{43}{figure.caption.163}
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Cost Function's peaks width}}{44}{figure.caption.167}
+\contentsline {figure}{\numberline {3.4}{\ignorespaces $L_2$ cost function as a superposition of the individual $L_2^{(\ell )}$ cost functions}}{45}{figure.caption.168}
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Auto ambiguity function translation to velocity space}}{46}{figure.caption.169}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {6.1}{\ignorespaces Scenario Geometry: The 6 receivers are evenly spread on a circle with a radius of $1[km]$ around the origin. The transmitter is located at $(100,300)[m,m]$ with velocity $(200,200)[m/s,m/s]$.\relax }}{67}{figure.caption.276}
-\contentsline {figure}{\numberline {6.2}{\ignorespaces Time domain plot of the transmitted pulse signal\relax }}{67}{figure.caption.277}
-\contentsline {figure}{\numberline {6.3}{\ignorespaces Power spectrum plot of the transmitted pulse signal\relax }}{68}{figure.caption.278}
-\contentsline {figure}{\numberline {6.4}{\ignorespaces Position Estimation Performance Vs. SNR - Circular Receivers Array\relax }}{69}{figure.caption.280}
-\contentsline {figure}{\numberline {6.5}{\ignorespaces Velocity Estimation Performance Vs. SNR - Circular Receivers Array\relax }}{70}{figure.caption.281}
-\contentsline {figure}{\numberline {6.6}{\ignorespaces Time domain plot of the transmitted random signal\relax }}{71}{figure.caption.283}
-\contentsline {figure}{\numberline {6.7}{\ignorespaces Power spectrum plot of the transmitted random signal\relax }}{72}{figure.caption.284}
-\contentsline {figure}{\numberline {6.8}{\ignorespaces Position Estimation Performance Vs. SNR - Circular Receivers Array, Random Signal\relax }}{73}{figure.caption.286}
-\contentsline {figure}{\numberline {6.9}{\ignorespaces Velocity Estimation Performance Vs. SNR - Circular Receivers Array, Random Signal\relax }}{73}{figure.caption.287}
-\contentsline {figure}{\numberline {6.10}{\ignorespaces Scenario Geometry: The 6 receivers are evenly spread on a the $x$-axis in a $2[km]$ long linear array around the origin. The transmitter is located at $(100,1000)$[m,m] with velocity $(200,200)$[m/s,m/s].\relax }}{75}{figure.caption.289}
-\contentsline {figure}{\numberline {6.11}{\ignorespaces Position Estimation Performance Vs. SNR - Linear Receivers Array, Pulse Signal\relax }}{76}{figure.caption.291}
-\contentsline {figure}{\numberline {6.12}{\ignorespaces Velocity Estimation Performance Vs. SNR - Linear Receivers Array, Pulse Signal\relax }}{77}{figure.caption.292}
-\contentsline {figure}{\numberline {6.13}{\ignorespaces Contour plot of the unknown signals cost function, for a circular receivers array and a pulse signal\relax }}{79}{figure.caption.297}
-\contentsline {figure}{\numberline {6.14}{\ignorespaces Contour plot of the known signals cost function, for a circular receivers array and a pulse signal\relax }}{80}{figure.caption.298}
-\contentsline {figure}{\numberline {6.15}{\ignorespaces Contour plot of the conventional two-step cost function, for a circular receivers array and a pulse signal\relax }}{80}{figure.caption.299}
-\contentsline {figure}{\numberline {6.16}{\ignorespaces Wide view contour plot of the conventional two-step cost function, for a circular receivers array and a pulse signal\relax }}{81}{figure.caption.300}
-\contentsline {figure}{\numberline {6.17}{\ignorespaces Contour plot of the unknown signals cost function, for a linear receivers array and a pulse signal\relax }}{82}{figure.caption.302}
-\contentsline {figure}{\numberline {6.18}{\ignorespaces Contour plot of the known signals cost function, for a linear receivers array and a pulse signal\relax }}{83}{figure.caption.303}
-\contentsline {figure}{\numberline {6.19}{\ignorespaces Contour plot of the conventional two-step cost function, for a linear receivers array and a pulse signal\relax }}{83}{figure.caption.304}
-\contentsline {figure}{\numberline {6.20}{\ignorespaces Wide view contour plot of the conventional two-step cost function, for a linear receivers array and a pulse signal\relax }}{84}{figure.caption.305}
-\contentsline {figure}{\numberline {6.21}{\ignorespaces Contour plot of the unknown signals cost function, for a circular receivers array and a random signal\relax }}{86}{figure.caption.308}
-\contentsline {figure}{\numberline {6.22}{\ignorespaces Contour plot of the known signals cost function, for a circular receivers array and a random signal\relax }}{86}{figure.caption.309}
-\contentsline {figure}{\numberline {6.23}{\ignorespaces Contour plot of the conventional two-step signals cost function, for a circular receivers array and a random signal\relax }}{87}{figure.caption.310}
-\contentsline {figure}{\numberline {6.24}{\ignorespaces Wide view contour plot of the unknown signals cost function, for a circular receivers array and a random signal\relax }}{87}{figure.caption.311}
-\contentsline {figure}{\numberline {6.25}{\ignorespaces Wide view contour plot of the known signals cost function, for a circular receivers array and a random signal\relax }}{88}{figure.caption.312}
-\contentsline {figure}{\numberline {6.26}{\ignorespaces Wide view contour plot of the conventional two-step cost function, for a circular receivers array and a random signal\relax }}{88}{figure.caption.313}
-\contentsline {figure}{\numberline {6.27}{\ignorespaces Contour plot of the unknown signals cost function, for a linear receivers array and a random signal\relax }}{89}{figure.caption.315}
-\contentsline {figure}{\numberline {6.28}{\ignorespaces Contour plot of the known signals cost function, for a linear receivers array and a random signal\relax }}{90}{figure.caption.316}
-\contentsline {figure}{\numberline {6.29}{\ignorespaces Contour plot of the conventional two-step signals cost function, for a linear receivers array and a random signal\relax }}{90}{figure.caption.317}
-\contentsline {figure}{\numberline {6.30}{\ignorespaces Wide view contour plot of the unknown signals cost function, for a linear receivers array and a random signal\relax }}{91}{figure.caption.318}
-\contentsline {figure}{\numberline {6.31}{\ignorespaces Wide view contour plot of the known signals cost function, for a linear receivers array and a random signal\relax }}{91}{figure.caption.319}
-\contentsline {figure}{\numberline {6.32}{\ignorespaces Position Estimation Preformance Vs. Position for a circular array and a random signal}}{94}{figure.caption.322}
-\contentsline {figure}{\numberline {6.33}{\ignorespaces Velocity Estimation Preformance Vs. Position for a circular array and a random signal}}{95}{figure.caption.323}
-\contentsline {figure}{\numberline {6.34}{\ignorespaces Position Estimation Preformance Vs. Position for a linear array and a random signal}}{96}{figure.caption.325}
-\contentsline {figure}{\numberline {6.35}{\ignorespaces Velocity Estimation Preformance Vs. Position for a linear array and a random signal}}{96}{figure.caption.326}
-\contentsline {figure}{\numberline {6.36}{\ignorespaces Position Estimation Preformance Vs. Position for a random array and a random signal}}{98}{figure.caption.328}
-\contentsline {figure}{\numberline {6.37}{\ignorespaces Velocity Estimation Preformance Vs. Position for a random array and a random signal}}{98}{figure.caption.329}
+\contentsline {figure}{\numberline {6.1}{\ignorespaces Scenario Geometry: The 6 receivers are evenly spread on a circle with a radius of $1[km]$ around the origin. The transmitter is located at $(100,300)[m,m]$ with velocity $(200,200)[m/s,m/s]$.\relax }}{70}{figure.caption.281}
+\contentsline {figure}{\numberline {6.2}{\ignorespaces Time domain plot of the transmitted pulse signal\relax }}{70}{figure.caption.282}
+\contentsline {figure}{\numberline {6.3}{\ignorespaces Power spectrum plot of the transmitted pulse signal\relax }}{71}{figure.caption.283}
+\contentsline {figure}{\numberline {6.4}{\ignorespaces Position Estimation Performance Vs. SNR - Circular Receivers Array\relax }}{72}{figure.caption.285}
+\contentsline {figure}{\numberline {6.5}{\ignorespaces Velocity Estimation Performance Vs. SNR - Circular Receivers Array\relax }}{73}{figure.caption.286}
+\contentsline {figure}{\numberline {6.6}{\ignorespaces Time domain plot of the transmitted random signal\relax }}{74}{figure.caption.288}
+\contentsline {figure}{\numberline {6.7}{\ignorespaces Power spectrum plot of the transmitted random signal\relax }}{75}{figure.caption.289}
+\contentsline {figure}{\numberline {6.8}{\ignorespaces Position Estimation Performance Vs. SNR - Circular Receivers Array, Random Signal\relax }}{76}{figure.caption.291}
+\contentsline {figure}{\numberline {6.9}{\ignorespaces Velocity Estimation Performance Vs. SNR - Circular Receivers Array, Random Signal\relax }}{76}{figure.caption.292}
+\contentsline {figure}{\numberline {6.10}{\ignorespaces Scenario Geometry: The 6 receivers are evenly spread on a the $x$-axis in a $2[km]$ long linear array around the origin. The transmitter is located at $(100,1000)$[m,m] with velocity $(200,200)$[m/s,m/s].\relax }}{78}{figure.caption.294}
+\contentsline {figure}{\numberline {6.11}{\ignorespaces Position Estimation Performance Vs. SNR - Linear Receivers Array, Pulse Signal\relax }}{79}{figure.caption.296}
+\contentsline {figure}{\numberline {6.12}{\ignorespaces Velocity Estimation Performance Vs. SNR - Linear Receivers Array, Pulse Signal\relax }}{80}{figure.caption.297}
+\contentsline {figure}{\numberline {6.13}{\ignorespaces Contour plot of the unknown signals cost function, for a circular receivers array and a pulse signal\relax }}{82}{figure.caption.302}
+\contentsline {figure}{\numberline {6.14}{\ignorespaces Contour plot of the known signals cost function, for a circular receivers array and a pulse signal\relax }}{83}{figure.caption.303}
+\contentsline {figure}{\numberline {6.15}{\ignorespaces Contour plot of the conventional two-step cost function, for a circular receivers array and a pulse signal\relax }}{83}{figure.caption.304}
+\contentsline {figure}{\numberline {6.16}{\ignorespaces Wide view contour plot of the conventional two-step cost function, for a circular receivers array and a pulse signal\relax }}{84}{figure.caption.305}
+\contentsline {figure}{\numberline {6.17}{\ignorespaces Contour plot of the unknown signals cost function, for a linear receivers array and a pulse signal\relax }}{85}{figure.caption.307}
+\contentsline {figure}{\numberline {6.18}{\ignorespaces Contour plot of the known signals cost function, for a linear receivers array and a pulse signal\relax }}{86}{figure.caption.308}
+\contentsline {figure}{\numberline {6.19}{\ignorespaces Contour plot of the conventional two-step cost function, for a linear receivers array and a pulse signal\relax }}{86}{figure.caption.309}
+\contentsline {figure}{\numberline {6.20}{\ignorespaces Wide view contour plot of the conventional two-step cost function, for a linear receivers array and a pulse signal\relax }}{87}{figure.caption.310}
+\contentsline {figure}{\numberline {6.21}{\ignorespaces Contour plot of the unknown signals cost function, for a circular receivers array and a random signal\relax }}{89}{figure.caption.313}
+\contentsline {figure}{\numberline {6.22}{\ignorespaces Contour plot of the known signals cost function, for a circular receivers array and a random signal\relax }}{89}{figure.caption.314}
+\contentsline {figure}{\numberline {6.23}{\ignorespaces Contour plot of the conventional two-step signals cost function, for a circular receivers array and a random signal\relax }}{90}{figure.caption.315}
+\contentsline {figure}{\numberline {6.24}{\ignorespaces Wide view contour plot of the unknown signals cost function, for a circular receivers array and a random signal\relax }}{90}{figure.caption.316}
+\contentsline {figure}{\numberline {6.25}{\ignorespaces Wide view contour plot of the known signals cost function, for a circular receivers array and a random signal\relax }}{91}{figure.caption.317}
+\contentsline {figure}{\numberline {6.26}{\ignorespaces Wide view contour plot of the conventional two-step cost function, for a circular receivers array and a random signal\relax }}{91}{figure.caption.318}
+\contentsline {figure}{\numberline {6.27}{\ignorespaces Contour plot of the unknown signals cost function, for a linear receivers array and a random signal\relax }}{92}{figure.caption.320}
+\contentsline {figure}{\numberline {6.28}{\ignorespaces Contour plot of the known signals cost function, for a linear receivers array and a random signal\relax }}{93}{figure.caption.321}
+\contentsline {figure}{\numberline {6.29}{\ignorespaces Contour plot of the conventional two-step signals cost function, for a linear receivers array and a random signal\relax }}{93}{figure.caption.322}
+\contentsline {figure}{\numberline {6.30}{\ignorespaces Wide view contour plot of the unknown signals cost function, for a linear receivers array and a random signal\relax }}{94}{figure.caption.323}
+\contentsline {figure}{\numberline {6.31}{\ignorespaces Wide view contour plot of the known signals cost function, for a linear receivers array and a random signal\relax }}{94}{figure.caption.324}
+\contentsline {figure}{\numberline {6.32}{\ignorespaces Position Estimation Preformance Vs. Position for a circular array and a random signal}}{97}{figure.caption.327}
+\contentsline {figure}{\numberline {6.33}{\ignorespaces Velocity Estimation Preformance Vs. Position for a circular array and a random signal}}{98}{figure.caption.328}
+\contentsline {figure}{\numberline {6.34}{\ignorespaces Position Estimation Preformance Vs. Position for a linear array and a random signal}}{99}{figure.caption.330}
+\contentsline {figure}{\numberline {6.35}{\ignorespaces Velocity Estimation Preformance Vs. Position for a linear array and a random signal}}{99}{figure.caption.331}
+\contentsline {figure}{\numberline {6.36}{\ignorespaces Position Estimation Preformance Vs. Position for a random array and a random signal}}{101}{figure.caption.333}
+\contentsline {figure}{\numberline {6.37}{\ignorespaces Velocity Estimation Preformance Vs. Position for a random array and a random signal}}{101}{figure.caption.334}
 \addvspace {10\p@ }
